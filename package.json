@@ -1,0 +1,26 @@
+{
+  "name": "object-utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node build/index.js",
+    "watch": "babel src --watch --out-dir build --source-maps",
+    "build": "babel src --out-dir build --source-maps",
+    "test": "jest",
+    "test-watch": "jest --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.12.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "jest": "^27.4.7",
+    "babel-jest": "^27.4.6"
+  }
+}
