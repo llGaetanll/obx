@@ -17,6 +17,18 @@ const t = (d) =>
  */
 export const id = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
+// create iterator from object/array
+// this ensures we aren't missing any keys
+const iterObj = (o) => {
+  const type = t(o);
+  if (!"ao".includes(type)) throw new Error("Object must be passed to iterObj");
+
+  // arrays are iterators
+  if (type === "a") return o;
+
+  return Object.keys(o);
+};
+
 /**
  * Assert that 2 objects are equal
  * Objects are equal if they have the same keys.
@@ -35,13 +47,17 @@ export const eq = (a, b, d = -1) => {
   // check for same root object type
   if (t(a) !== t(b)) return false;
 
-  // assert that b is in a
-  // and that a is in b
-  for (const k of Object.keys(b)) if (!(k in a)) return false;
-  for (const k of Object.keys(a)) if (!(k in b)) return false;
+  if (t(a) === "o") {
+    // assert that b is in a
+    // and that a is in b
+    for (const k of Object.keys(b)) if (!(k in a)) return false;
+    for (const k of Object.keys(a)) if (!(k in b)) return false;
+  }
 
-  for (const k of Object.keys(a)) {
-    // check for same key type
+  // objects and arrays are iterated differently
+  const keys = iterObj(a);
+  for (const k of keys) {
+    // type check
     if (t(a[k]) !== t(b[k])) return false;
 
     // asserting function equality is basically impossible
@@ -56,8 +72,6 @@ export const eq = (a, b, d = -1) => {
 
   return true;
 };
-
-// const path = "foo.0.path.test.deep.4.thing";
 
 /**
  * Get value from object
@@ -170,20 +184,31 @@ export const map = (o, fn) => map_r(o, fn, 1);
  * @param {Object} d Depth of map. Defaults to infinity
  */
 export const map_r = (o, fn, d = -1) => {
+  // this type check could be removed with TS
+  const type = t(o);
+  if (!"ao".includes(type)) throw new Error("Object must be passed to map");
+
+  // n: new object
   // p: current object path
   // r: root object
-  const aux = (o, fn, d, p, r) => {
-    if (d === 0 || len(o) === 0) return;
+  const aux = (o, fn, n, d, p, r) => {
+    if (d === 0) return n;
 
     for (const [k, v] of Object.entries(o)) {
-      // objects or arrays
-      if ("oa".includes(t(v))) aux(v, fn, d - 1, [...p, k], r);
+      // path string
+      const _p = [...p, k].join(".");
 
-      fn([k, v], p.join("."), r);
+      // callback is ran on all value types
+      set(n, _p, fn([k, v], _p, r));
+
+      // objects or arrays
+      if ("oa".includes(t(v))) aux(v, fn, n, d - 1, [...p, k], r);
     }
+
+    return n;
   };
 
-  return aux(o, fn, d, [], o);
+  return aux(o, fn, type === "a" ? [] : {}, d, [], o);
 };
 
 /**

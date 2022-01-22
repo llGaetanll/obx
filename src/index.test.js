@@ -109,6 +109,8 @@ describe("eq", () => {
     a[1] = 1;
 
     const b = [undefined, 1];
+
+    console.log(a.length, b.length);
     expect(obx.eq(a, b)).toBe(true); // -> false
   });
 
@@ -231,6 +233,15 @@ describe("set", () => {
     const arr = [];
     arr[2] = { bar: "baz" };
     const res = { foo: arr };
+
+    expect(obx.eq(o, res)).toBe(true);
+  });
+
+  test("deep undefined array index 2", () => {
+    const o = {};
+    obx.set(o, "foo.2.bar", "baz");
+
+    const res = { foo: [undefined, undefined, { bar: "baz" }] };
 
     expect(obx.eq(o, res)).toBe(true);
   });
@@ -457,8 +468,6 @@ describe("cp", () => {
     const o = { foo: "bar" };
     const n = obx.cp(o);
 
-    // console.log(o, n);
-
     expect(obx.eq(o, n)).toBe(true);
     // expect(deepCopyCheck(n, o)).toBe(true);
   });
@@ -527,9 +536,114 @@ describe("cp", () => {
   });
 });
 
-describe("map", () => {});
+describe("map", () => {
+  test("empty object", () => {
+    const o = {};
 
-describe("map_r", () => {});
+    const n = obx.map(o, ([_, v]) => `'${v}' is what a loser would say`);
+
+    expect(obx.eq(n, {})).toBe(true);
+  });
+
+  test("simple object", () => {
+    const o = {
+      foo: "bar",
+      bar: "baz",
+      baz: "foo",
+    };
+
+    const n = obx.map(o, ([_, v]) => `'${v}' is what a loser would say`);
+
+    expect(
+      obx.eq(n, {
+        foo: "'bar' is what a loser would say",
+        bar: "'baz' is what a loser would say",
+        baz: "'foo' is what a loser would say",
+      })
+    ).toBe(true);
+    // expect(deepCopyCheck(n, o)).toBe(true);
+  });
+
+  test("empty array", () => {
+    const o = [];
+
+    const n = obx.map(o, ([_, v]) => v + 1);
+
+    expect(obx.eq(n, [])).toBe(true);
+  });
+
+  test("simple array", () => {
+    const o = [1, 2, 3];
+
+    const n = obx.map(o, ([_, v]) => v + 1);
+
+    expect(obx.eq(n, [2, 3, 4])).toBe(true);
+  });
+});
+
+describe("map_r", () => {
+  test("deep object", () => {
+    const o = {
+      foo: "bar",
+      bar: {
+        baz: {
+          haz: "wow",
+        },
+        foo: "bar",
+      },
+      raz: "faz",
+    };
+
+    // Note that map will callback on every value of the object, including sub objects!
+    const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
+
+    const n = obx.map_r(o, emphasis);
+
+    expect(
+      obx.eq(n, {
+        foo: "bar!",
+        bar: {
+          baz: {
+            haz: "wow!",
+          },
+          foo: "bar!",
+        },
+        raz: "faz!",
+      })
+    ).toBe(true);
+  });
+
+  test("complex object", () => {
+    const o = {
+      foo: "bar",
+      bar: [
+        { foo: "bar", bar: "baz" },
+        { foo: "bar", bar: "baz" },
+        { foo: "bar", bar: "baz" },
+      ],
+      raz: "faz",
+    };
+
+    // Note that map will callback on every value of the object, including sub objects!
+    const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
+
+    const n = obx.map_r(o, emphasis);
+
+    expect(
+      obx.eq(n, {
+        foo: "bar!",
+        bar: [
+          { foo: "bar!", bar: "baz!" },
+          { foo: "bar!", bar: "baz!" },
+          { foo: "bar!", bar: "baz!" },
+        ],
+        raz: "faz!",
+      })
+    ).toBe(true);
+  });
+
+  // TODO: test depth
+});
 
 describe("reduce", () => {});
 
