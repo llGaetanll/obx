@@ -123,7 +123,7 @@ export const set = (o, p, v) => {
  * The length of an object is determined by its number of keys.
  * @param {Object} o Object to find length of
  */
-export const len = (o) => reduce(o, (a) => a + 1, 0);
+export const len = (o) => Object.keys(o).length;
 
 /**
  * Recursively find the length of an object.
@@ -192,17 +192,16 @@ export const map_r = (o, fn, d = -1) => {
   // p: current object path
   // r: root object
   const aux = (o, fn, n, d, p, r) => {
-    if (d === 0) return n;
-
     for (const [k, v] of Object.entries(o)) {
       // path string
       const _p = [...p, k].join(".");
 
       // callback is ran on all value types
-      set(n, _p, fn([k, v], _p, r));
+      // n is mutated here
+      set(n, _p, d !== 0 ? fn([k, v], _p, r) : v);
 
-      // objects or arrays
-      if ("oa".includes(t(v))) aux(v, fn, n, d - 1, [...p, k], r);
+      // objects or arrays: recurse
+      if (d !== 0 && "oa".includes(t(v))) aux(v, fn, n, d - 1, [...p, k], r);
     }
 
     return n;
@@ -254,6 +253,14 @@ export const reduce_r = (o, fn, a, d = -1) => {
 export const zip = (...d) => {};
 
 /**
+ * Recursive object subtraction
+ * @param {Object} o The object to be subtracted from. This object is mutated.
+ * @param {Object} s The object to subtract with
+ * @param {Object} d Depth of the subtraction. Defaults to infinity
+ */
+export const sub = (o, s, d = -1) => {};
+
+/**
  * Recursive, in-place object subtraction
  * @param {Object} o The object to be subtracted from. This object is mutated.
  * @param {Object} s The object to subtract with
@@ -278,6 +285,14 @@ export const sub_i = (o, s, d = -1) => {
     if (t(o[k]) === "p" && k in s && s[k] === o[k]) delete o[k];
   }
 };
+
+/**
+ * Recursive object addition. If both objects contain the same key, defaults to o
+ * @param {Object} o The object to be added to.
+ * @param {Object} a The object to add with
+ * @param {Object} d Depth of the addition. Defaults to infinity
+ */
+export const add = (o, s, d = -1) => {};
 
 /**
  * Recursive, in-place object addition. If both objects contain the same key, defaults to o
