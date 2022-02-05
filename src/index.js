@@ -47,7 +47,7 @@ const iterObj = (o) => {
  *
  * @param {Object} a Object 1
  * @param {Object} b Object 2
- * @param {Object} d Depth of equality check. Defaults to infinity
+ * @param {number=} d Depth of equality check. Defaults to infinity
  */
 export const eq = (a, b, d = -1) => {
   if (d === 0) return true;
@@ -86,6 +86,37 @@ export const eq = (a, b, d = -1) => {
  *
  * @param {Object} o The object
  * @param {String} p Value path
+ *
+ * @example
+ * obx.get("foo.bar", {
+ *    foo: {
+ *      bar: "baz"
+ *    }
+ * });
+ * // -> "baz"
+ *
+ * @example
+ * obx.get("foo.2.baz", {
+ *    foo: [
+ *      {
+ *        foo: 'foo'
+ *      },
+ *      {
+ *        bar: 'bar'
+ *      },
+ *      {
+ *        baz: 'baz'
+ *      }
+ *    ]
+ * });
+ * // -> "baz"
+ *
+ * @example
+ * obx.get("foo.2.baz", {
+ *    foo: 'bar'
+ * })
+ * // -> null
+ *
  */
 export const get = (o, p) => {
   const path = p.split(".");
@@ -138,7 +169,7 @@ export const len = (o) => Object.keys(o).length;
  *
  * The length of an object is determined by its number of keys.
  * @param {Object} o Object to find length of
- * @param {Object} d Depth of len. Defaults to infinity
+ * @param {number=} d Depth of len. Defaults to infinity
  */
 export const len_r = (o, d = -1) => reduce_r(o, (a) => a + 1, 0, d);
 
@@ -152,7 +183,7 @@ export const empty = (o) => eq(o, {});
 /**
  * Deep copy an object
  * @param {Object} o Object to copy
- * @param {Object} d Depth of copy. Defaults to infinity
+ * @param {number=} d Depth of copy. Defaults to infinity
  */
 export const cp = (o, d = -1) => {
   // this type check could be removed with TS
@@ -189,7 +220,7 @@ export const map = (o, fn) => map_r(o, fn, 1);
  * Recursively map though all entries of an object
  * @param {Object} o Object to map through
  * @param {Function} fn Callback function. Contains [k, v] pair, path, object
- * @param {Object} d Depth of map. Defaults to infinity
+ * @param {number=} d Depth of map. Defaults to infinity
  */
 export const map_r = (o, fn, d = -1) => {
   // this type check could be removed with TS
@@ -231,7 +262,7 @@ export const reduce = (o, fn, a) => reduce_r(o, fn, a, 1);
  * @param {Object} o Object to map through
  * @param {Function} fn Callback function. Contains accumulator, [k, v] pair, path, object
  * @param {Object} a Accumulator
- * @param {Object} d Reduce depth. Defaults to infinity
+ * @param {number=} d Reduce depth. Defaults to infinity
  */
 export const reduce_r = (o, fn, a, d = -1) => {
   // p: current object path
@@ -256,23 +287,23 @@ export const reduce_r = (o, fn, a, d = -1) => {
 
 /**
  * Group multiple objects into a single iterator
- * TODO
+ * @param {...Object} objects - Objects to be zipped together
  */
-export const zip = (...d) => {};
+const zip = (...o) => {};
 
 /**
  * Recursive object subtraction
  * @param {Object} o The object to be subtracted from. This object is mutated.
  * @param {Object} s The object to subtract with
- * @param {Object} d Depth of the subtraction. Defaults to infinity
+ * @param {number=} d Depth of the subtraction. Defaults to infinity
  */
-export const sub = (o, s, d = -1) => {};
+const sub = (o, s, d = -1) => {};
 
 /**
  * Recursive, in-place object subtraction
  * @param {Object} o The object to be subtracted from. This object is mutated.
  * @param {Object} s The object to subtract with
- * @param {Object} d Depth of the subtraction. Defaults to infinity
+ * @param {number=} d Depth of the subtraction. Defaults to infinity
  */
 export const sub_i = (o, s, d = -1) => {
   if (d === 0) return;
@@ -298,15 +329,15 @@ export const sub_i = (o, s, d = -1) => {
  * Recursive object addition. If both objects contain the same key, defaults to o
  * @param {Object} o The object to be added to.
  * @param {Object} a The object to add with
- * @param {Object} d Depth of the addition. Defaults to infinity
+ * @param {number=} d Depth of the addition. Defaults to infinity
  */
-export const add = (o, s, d = -1) => {};
+const add = (o, s, d = -1) => {};
 
 /**
  * Recursive, in-place object addition. If both objects contain the same key, defaults to o
  * @param {Object} o The object to be added to.
  * @param {Object} a The object to add with
- * @param {Object} d Depth of the addition. Defaults to infinity
+ * @param {number=} d Depth of the addition. Defaults to infinity
  */
 export const add_i = (o, a, d = -1) => {
   if (d === 0) return;

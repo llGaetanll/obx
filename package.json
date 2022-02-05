@@ -7,6 +7,8 @@
     "start": "node build/index.js",
     "watch": "babel src --watch --out-dir build --source-maps",
     "build": "babel src --out-dir build --source-maps",
+    "doc-gen": "jsdoc2md --partial docs/partials/*.hbs --helper docs/*.js --template docs/README.hbs --files src/index.js > README.md",
+    "doc-json": "jsdoc2md --json src/index.js > docs/doc.json",
     "test": "jest",
     "test-watch": "jest --watch"
   },
@@ -20,7 +22,8 @@
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
+    "babel-jest": "^27.4.6",
     "jest": "^27.4.7",
-    "babel-jest": "^27.4.6"
+    "jsdoc-to-markdown": "^7.1.1"
   }
 }

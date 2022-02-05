@@ -1,0 +1,652 @@
+[
+  {
+    "id": "id",
+    "longname": "id",
+    "name": "id",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Assert that 2 objects are identical.\n\nIdentical objects have the same keys, in the same order",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object 1",
+        "name": "a"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object 2",
+        "name": "b"
+      }
+    ],
+    "meta": {
+      "lineno": 18,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 0
+  },
+  {
+    "id": "eq",
+    "longname": "eq",
+    "name": "eq",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Assert that 2 objects are equal\nObjects are equal if they have the same keys.\n\nNote: for arrays, order matters.\ni.e.\n eq([1, 2, 3], [3, 2, 1]) // -> false",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object 1",
+        "name": "a"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object 2",
+        "name": "b"
+      },
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "description": "Depth of equality check. Defaults to infinity",
+        "name": "d"
+      }
+    ],
+    "meta": {
+      "lineno": 52,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 1
+  },
+  {
+    "id": "get",
+    "longname": "get",
+    "name": "get",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Get value from object",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "String"
+          ]
+        },
+        "description": "Value path",
+        "name": "p"
+      }
+    ],
+    "meta": {
+      "lineno": 90,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 2
+  },
+  {
+    "id": "set",
+    "longname": "set",
+    "name": "set",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Set value in object",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "String"
+          ]
+        },
+        "description": "Value path",
+        "name": "p"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Value to set",
+        "name": "v"
+      }
+    ],
+    "meta": {
+      "lineno": 111,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 3
+  },
+  {
+    "id": "len",
+    "longname": "len",
+    "name": "len",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Find length of an object.\n\nThe length of an object is determined by its number of keys.",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object to find length of",
+        "name": "o"
+      }
+    ],
+    "meta": {
+      "lineno": 134,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 4
+  },
+  {
+    "id": "len_r",
+    "longname": "len_r",
+    "name": "len_r",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Recursively find the length of an object.\n\nThe length of an object is determined by its number of keys.",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object to find length of",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "description": "Depth of len. Defaults to infinity",
+        "name": "d"
+      }
+    ],
+    "meta": {
+      "lineno": 143,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 5
+  },
+  {
+    "id": "empty",
+    "longname": "empty",
+    "name": "empty",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Assert that an object type is empty.",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object to find length of",
+        "name": "o"
+      }
+    ],
+    "meta": {
+      "lineno": 150,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 6
+  },
+  {
+    "id": "cp",
+    "longname": "cp",
+    "name": "cp",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Deep copy an object",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object to copy",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "description": "Depth of copy. Defaults to infinity",
+        "name": "d"
+      }
+    ],
+    "meta": {
+      "lineno": 157,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 7
+  },
+  {
+    "id": "map",
+    "longname": "map",
+    "name": "map",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Map though all top layer entries of an object",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object to map through",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "function"
+          ]
+        },
+        "description": "Callback function. Contains [k, v] pair, path, object",
+        "name": "fn"
+      }
+    ],
+    "meta": {
+      "lineno": 186,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 8
+  },
+  {
+    "id": "map_r",
+    "longname": "map_r",
+    "name": "map_r",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Recursively map though all entries of an object",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object to map through",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "function"
+          ]
+        },
+        "description": "Callback function. Contains [k, v] pair, path, object",
+        "name": "fn"
+      },
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "description": "Depth of map. Defaults to infinity",
+        "name": "d"
+      }
+    ],
+    "meta": {
+      "lineno": 194,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 9
+  },
+  {
+    "id": "reduce",
+    "longname": "reduce",
+    "name": "reduce",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Reduce all top layer entries of an object",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object to map through",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "function"
+          ]
+        },
+        "description": "Callback function. Contains [k, v] pair, path, object",
+        "name": "fn"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Accumulator",
+        "name": "a"
+      }
+    ],
+    "meta": {
+      "lineno": 227,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 10
+  },
+  {
+    "id": "reduce_r",
+    "longname": "reduce_r",
+    "name": "reduce_r",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Recursively reduce all entries of an object",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Object to map through",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "function"
+          ]
+        },
+        "description": "Callback function. Contains accumulator, [k, v] pair, path, object",
+        "name": "fn"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Accumulator",
+        "name": "a"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "Reduce depth. Defaults to infinity",
+        "name": "d"
+      }
+    ],
+    "meta": {
+      "lineno": 236,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 11
+  },
+  {
+    "id": "sub_i",
+    "longname": "sub_i",
+    "name": "sub_i",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Recursive, in-place object subtraction",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object to be subtracted from. This object is mutated.",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object to subtract with",
+        "name": "s"
+      },
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "description": "Depth of the subtraction. Defaults to infinity",
+        "name": "d"
+      }
+    ],
+    "meta": {
+      "lineno": 277,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 14
+  },
+  {
+    "id": "add_i",
+    "longname": "add_i",
+    "name": "add_i",
+    "kind": "constant",
+    "scope": "global",
+    "description": "Recursive, in-place object addition. If both objects contain the same key, defaults to o",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object to be added to.",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object to add with",
+        "name": "a"
+      },
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "description": "Depth of the addition. Defaults to infinity",
+        "name": "d"
+      }
+    ],
+    "meta": {
+      "lineno": 311,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 16
+  },
+  {
+    "id": "zip",
+    "longname": "zip",
+    "name": "zip",
+    "kind": "function",
+    "scope": "global",
+    "description": "Group multiple objects into a single iterator",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "variable": true,
+        "description": "Objects to be zipped together",
+        "name": "objects"
+      }
+    ],
+    "meta": {
+      "lineno": 261,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 12
+  },
+  {
+    "id": "sub",
+    "longname": "sub",
+    "name": "sub",
+    "kind": "function",
+    "scope": "global",
+    "description": "Recursive object subtraction",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object to be subtracted from. This object is mutated.",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object to subtract with",
+        "name": "s"
+      },
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "description": "Depth of the subtraction. Defaults to infinity",
+        "name": "d"
+      }
+    ],
+    "meta": {
+      "lineno": 269,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 13
+  },
+  {
+    "id": "add",
+    "longname": "add",
+    "name": "add",
+    "kind": "function",
+    "scope": "global",
+    "description": "Recursive object addition. If both objects contain the same key, defaults to o",
+    "params": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object to be added to.",
+        "name": "o"
+      },
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The object to add with",
+        "name": "a"
+      },
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "description": "Depth of the addition. Defaults to infinity",
+        "name": "d"
+      }
+    ],
+    "meta": {
+      "lineno": 303,
+      "filename": "index.js",
+      "path": "/Users/al/GitHub/obx/src"
+    },
+    "order": 15
+  }
+]
