@@ -23,10 +23,18 @@ const iterObj = (o) => {
   const type = t(o);
   if (!"ao".includes(type)) throw new Error("Object must be passed to iterObj");
 
-  // arrays are iterators
-  if (type === "a") return o;
+  if (type === "o") return Object.keys(o);
 
-  return Object.keys(o);
+  // for arrays, iterate keys, return generator
+  return (function* arrayIter() {
+    let c = 0;
+    for (let i = 0; i < o.length; i++) {
+      c++;
+      yield i;
+    }
+
+    return c;
+  })();
 };
 
 /**
