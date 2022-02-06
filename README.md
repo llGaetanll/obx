@@ -23,7 +23,7 @@
     <img src="docs/img/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">almela/obx</h3>
+<h3 align="center">@almela/obx</h3>
 
   <p align="center">
     obx - objects extended
@@ -31,7 +31,7 @@
     <a href="https://github.com/llGaetanll/obx#docs"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/llGaetanll/obx">View Demo</a>
+    <a href="https://www.npmjs.com/package/@almela/obx">View on NPM</a>
     ·
     <a href="https://github.com/llGaetanll/obx/issues">Report Bug</a>
     ·
@@ -88,7 +88,7 @@ or with yarn
 ### Usage
 In your file, simply add
 ```js
-import obx from '@almela/obx'
+import * as obx from '@almela/obx'
 ```
 or simply import select functions
 ```js
@@ -101,14 +101,11 @@ import { eq, cp } from '@almela/obx'
 
 <!-- USAGE EXAMPLES -->
 ## Documentation
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+For even more examples, see the [tests](https://github.com/llGaetanll/obx/blob/master/src/index.test.js).
 
 
 ### `id`
-Assert that 2 objects are identical.
-
-Identical objects have the same keys, in the same order
+Assert that 2 objects are identical with same keys, in the same order
 
 **Params**
 
@@ -120,10 +117,6 @@ Identical objects have the same keys, in the same order
 ### `eq`
 Assert that 2 objects are equal
 Objects are equal if they have the same keys.
-
-Note: for arrays, order matters.
-i.e.
- eq([1, 2, 3], [3, 2, 1]) // -&gt; false
 
 **Params**
 
@@ -143,7 +136,7 @@ Get value from object
 | o | <code>Object</code> | The object |
 | p | <code>String</code> | Value path |
 
-**Example**  
+**Example** *(Get a deep key)*  
 ```js
 obx.get("foo.bar", {
    foo: {
@@ -152,7 +145,7 @@ obx.get("foo.bar", {
 });
 // -> "baz"
 ```
-**Example**  
+**Example** *(Also works with arrays)*  
 ```js
 obx.get("foo.2.baz", {
    foo: [
@@ -169,7 +162,7 @@ obx.get("foo.2.baz", {
 });
 // -> "baz"
 ```
-**Example**  
+**Example** *(No key? No problem.)*  
 ```js
 obx.get("foo.2.baz", {
    foo: 'bar'
@@ -187,10 +180,18 @@ Set value in object
 | p | <code>String</code> | Value path |
 | v | <code>Object</code> | Value to set |
 
+**Example** *(Set deep key)*  
+```js
+const o = {}
+obx.set(o, "foo.2.foo", 'bar')
+// o -> {
+//    foo: [<2 empty slots>, {
+//      foo: 'bar'
+//    }]
+// }
+```
 ### `len`
-Find length of an object.
-
-The length of an object is determined by its number of keys.
+Find the number of keys of an object.
 
 **Params**
 
@@ -198,10 +199,17 @@ The length of an object is determined by its number of keys.
 | --- | --- | --- |
 | o | <code>Object</code> | Object to find length of |
 
+**Example** *(Simple object)*  
+```js
+obx.len({ foo: 'bar', bar: 'baz' }) // -> 2
+```
+**Example** *(Recursive object)*  
+```js
+// Note: use `len_r` for recursive length
+obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 2
+```
 ### `len_r`
-Recursively find the length of an object.
-
-The length of an object is determined by its number of keys.
+Recursively find the number of keys of an object.
 
 **Params**
 
@@ -210,6 +218,11 @@ The length of an object is determined by its number of keys.
 | o | <code>Object</code> | Object to find length of |
 | [d] | <code>number</code> | Depth of len. Defaults to infinity |
 
+**Example** *(Recursive object)*  
+```js
+// Note: array keys are counted
+obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
+```
 ### `empty`
 Assert that an object type is empty.
 
@@ -219,6 +232,19 @@ Assert that an object type is empty.
 | --- | --- | --- |
 | o | <code>Object</code> | Object to find length of |
 
+**Example**  
+```js
+obx.empty({}) // -> true
+```
+**Example**  
+```js
+obx.empty({ foo: 'bar' }) // -> false
+```
+**Example**  
+```js
+// only works for objects
+obx.empty([]) // -> false
+```
 ### `cp`
 Deep copy an object
 
@@ -229,6 +255,24 @@ Deep copy an object
 | o | <code>Object</code> | Object to copy |
 | [d] | <code>number</code> | Depth of copy. Defaults to infinity |
 
+**Example** *(Copy by value, not by reference)*  
+```js
+const a = {
+   foo: {
+     bar: 'baz'
+   }
+}
+const b = obx.cp(a)
+
+a.foo.bar = 'bar'
+console.log(b)
+// object remains the same
+// -> {
+//   foo: {
+//     bar: 'baz'
+//   }
+// }
+```
 ### `map`
 Map though all top layer entries of an object
 
@@ -239,6 +283,24 @@ Map though all top layer entries of an object
 | o | <code>Object</code> | Object to map through |
 | fn | <code>function</code> | Callback function. Contains [k, v] pair, path, object |
 
+**Example** *(Basic mapping)*  
+```js
+ const o = {
+   foo: "bar",
+   bar: "baz",
+   baz: "foo",
+ };
+
+ // Note that map will callback on every value of the object, including sub objects!
+ const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
+
+ obx.map(o, emphasis);
+ // -> {
+ //     foo: "bar!",
+ //     bar: "baz!",
+ //     baz: "foo!",
+ // }
+```
 ### `map_r`
 Recursively map though all entries of an object
 
@@ -335,13 +397,13 @@ Recursive object addition. If both objects contain the same key, defaults to o
 ## Roadmap
 
 - [ ] Change function name convention?
-- [ ] Write docs
+- [x] Write docs
 - [ ] Implement `zip`
 - [ ] Add traversal options to
   - [ ] `map_r`
   - [ ] `reduce_r`
   - [ ] `zip`
-- [ ] Improve test coverage
+- [ ] Complete test coverage
   - [ ] Test `add_i`
 - [ ] Transition to TS
 

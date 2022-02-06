@@ -9,9 +9,7 @@ const t = (d) =>
     : "p"; // primitive
 
 /**
- * Assert that 2 objects are identical.
- *
- * Identical objects have the same keys, in the same order
+ * Assert that 2 objects are identical with same keys, in the same order
  * @param {Object} a Object 1
  * @param {Object} b Object 2
  */
@@ -40,10 +38,6 @@ const iterObj = (o) => {
 /**
  * Assert that 2 objects are equal
  * Objects are equal if they have the same keys.
- *
- * Note: for arrays, order matters.
- * i.e.
- *  eq([1, 2, 3], [3, 2, 1]) // -> false
  *
  * @param {Object} a Object 1
  * @param {Object} b Object 2
@@ -87,7 +81,7 @@ export const eq = (a, b, d = -1) => {
  * @param {Object} o The object
  * @param {String} p Value path
  *
- * @example
+ * @example <caption>Get a deep key</caption>
  * obx.get("foo.bar", {
  *    foo: {
  *      bar: "baz"
@@ -95,7 +89,7 @@ export const eq = (a, b, d = -1) => {
  * });
  * // -> "baz"
  *
- * @example
+ * @example <caption>Also works with arrays</caption>
  * obx.get("foo.2.baz", {
  *    foo: [
  *      {
@@ -111,7 +105,7 @@ export const eq = (a, b, d = -1) => {
  * });
  * // -> "baz"
  *
- * @example
+ * @example <caption>No key? No problem.</caption>
  * obx.get("foo.2.baz", {
  *    foo: 'bar'
  * })
@@ -138,6 +132,16 @@ export const get = (o, p) => {
  * @param {Object} o The object
  * @param {String} p Value path
  * @param {Object} v Value to set
+ *
+ * @example <caption>Set deep key</caption>
+ * const o = {}
+ * obx.set(o, "foo.2.foo", 'bar')
+ * // o -> {
+ * //    foo: [<2 empty slots>, {
+ * //      foo: 'bar'
+ * //    }]
+ * // }
+ *
  */
 export const set = (o, p, v) => {
   const path = p.split(".");
@@ -157,19 +161,28 @@ export const set = (o, p, v) => {
 };
 
 /**
- * Find length of an object.
+ * Find the number of keys of an object.
  *
- * The length of an object is determined by its number of keys.
  * @param {Object} o Object to find length of
+ *
+ * @example <caption>Simple object</caption>
+ * obx.len({ foo: 'bar', bar: 'baz' }) // -> 2
+ *
+ * @example <caption>Recursive object</caption>
+ * // Note: use `len_r` for recursive length
+ * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 2
  */
 export const len = (o) => Object.keys(o).length;
 
 /**
- * Recursively find the length of an object.
+ * Recursively find the number of keys of an object.
  *
- * The length of an object is determined by its number of keys.
  * @param {Object} o Object to find length of
  * @param {number=} d Depth of len. Defaults to infinity
+ *
+ * @example <caption>Recursive object</caption>
+ * // Note: array keys are counted
+ * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
  */
 export const len_r = (o, d = -1) => reduce_r(o, (a) => a + 1, 0, d);
 
@@ -177,6 +190,16 @@ export const len_r = (o, d = -1) => reduce_r(o, (a) => a + 1, 0, d);
  * Assert that an object type is empty.
  *
  * @param {Object} o Object to find length of
+ *
+ * @example
+ * obx.empty({}) // -> true
+ *
+ * @example
+ * obx.empty({ foo: 'bar' }) // -> false
+ *
+ * @example
+ * // only works for objects
+ * obx.empty([]) // -> false
  */
 export const empty = (o) => eq(o, {});
 
@@ -184,6 +207,23 @@ export const empty = (o) => eq(o, {});
  * Deep copy an object
  * @param {Object} o Object to copy
  * @param {number=} d Depth of copy. Defaults to infinity
+ *
+ * @example <caption>Copy by value, not by reference</caption>
+ * const a = {
+ *    foo: {
+ *      bar: 'baz'
+ *    }
+ * }
+ * const b = obx.cp(a)
+ *
+ * a.foo.bar = 'bar'
+ * console.log(b)
+ * // object remains the same
+ * // -> {
+ * //   foo: {
+ * //     bar: 'baz'
+ * //   }
+ * // }
  */
 export const cp = (o, d = -1) => {
   // this type check could be removed with TS
@@ -213,6 +253,23 @@ export const cp = (o, d = -1) => {
  * Map though all top layer entries of an object
  * @param {Object} o Object to map through
  * @param {Function} fn Callback function. Contains [k, v] pair, path, object
+ *
+ * @example <caption>Basic mapping</caption>
+ *  const o = {
+ *    foo: "bar",
+ *    bar: "baz",
+ *    baz: "foo",
+ *  };
+ *
+ *  // Note that map will callback on every value of the object, including sub objects!
+ *  const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
+ *
+ *  obx.map(o, emphasis);
+ *  // -> {
+ *  //     foo: "bar!",
+ *  //     bar: "baz!",
+ *  //     baz: "foo!",
+ *  // }
  */
 export const map = (o, fn) => map_r(o, fn, 1);
 
