@@ -78,11 +78,11 @@ obx is a super fast, tiny, well documented, and battle-tested object manipulatio
 ### Installation
 Install with npm
    ```sh
-   npm i almela/obx
+   npm i @almela/obx
    ```
 or with yarn
    ```sh
-  yarn add almela/obx 
+  yarn add @almela/obx 
    ```
 
 ### Usage
