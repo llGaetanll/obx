@@ -28,7 +28,7 @@
   <p align="center">
     obx - objects extended
     <br />
-    <a href="https://github.com/llGaetanll/obx#docs"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/llGaetanll/obx#documentation"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://www.npmjs.com/package/@almela/obx">View on NPM</a>
