@@ -28,7 +28,7 @@
   <p align="center">
     obx - objects extended
     <br />
-    <a href="https://github.com/llGaetanll/obx#documentation"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/llGaetanll/obx#docs"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://www.npmjs.com/package/@almela/obx">View on NPM</a>
@@ -356,6 +356,15 @@ Recursive, in-place object addition. If both objects contain the same key, defau
 | o | <code>Object</code> | The object to be added to. |
 | a | <code>Object</code> | The object to add with |
 | [d] | <code>number</code> | Depth of the addition. Defaults to infinity |
+
+### `inorder`
+Object inorder traversal iterator
+
+**Params**
+
+| Param | Type | Description |
+| --- | --- | --- |
+| o | <code>Object</code> | The object to iterate over |
 
 ### `zip`
 Group multiple objects into a single iterator

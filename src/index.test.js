@@ -839,7 +839,43 @@ describe("reduce_r", () => {
   });
 });
 
-describe("zip", () => {});
+describe("zip", () => {
+  test("simple objects", () => {
+    const a = {
+      foo: "bar",
+      bar: "baz",
+      baz: "haz",
+    };
+
+    const b = [4, 5, 6];
+
+    const z = obx.zip(a, b);
+
+    expect(obx.eq(z.next().value, ["bar", 4])).toBe(true);
+    expect(obx.eq(z.next().value, ["baz", 5])).toBe(true);
+    expect(obx.eq(z.next().value, ["haz", 6])).toBe(true);
+  });
+
+  test("deep objects", () => {
+    const a = {
+      foo: "bar",
+      bar: {
+        baz: "haz",
+      },
+    };
+
+    const b = [4, 5];
+
+    const z = obx.zip(a, b);
+
+    const v1 = z.next().value;
+    const v2 = z.next().value;
+
+    expect(obx.eq(v1, ["bar", 4])).toBe(true);
+    expect(obx.eq(v2, ["haz", 5])).toBe(true);
+    expect(obx.eq(v2, [{ baz: "haz" }, 5])).toBe(false);
+  });
+});
 
 describe("sub_i", () => {
   test("empty object", () => {

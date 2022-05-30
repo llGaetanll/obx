@@ -35,6 +35,9 @@ const iterObj = (o) => {
   })();
 };
 
+// Tree traversals
+function* traverse(o) {}
+
 /**
  * Assert that 2 objects are equal
  * Objects are equal if they have the same keys.
@@ -343,10 +346,40 @@ export const reduce_r = (o, fn, a, d = -1) => {
 };
 
 /**
+ * Object inorder traversal iterator
+ * @param {Object} o The object to iterate over
+ */
+export function* inorder(o) {
+  for (const v of Object.values(o)) {
+    if ("oa".includes(t(v))) yield* inorder(v);
+    else yield v;
+  }
+}
+
+/**
  * Group multiple objects into a single iterator
  * @param {...Object} objects - Objects to be zipped together
  */
-const zip = (...o) => {};
+export function* zip(...o) {
+  const gens = [];
+
+  // TODO: custom iterator: right now it's inorder traversal
+  for (const _o of o) gens.push(inorder(_o));
+
+  while (true) {
+    const vals = [];
+    for (const g of gens) {
+      const v = g.next().value;
+
+      // return as soon as one object is fully iterated
+      if (!v) return;
+
+      vals.push(v);
+    }
+
+    yield vals;
+  }
+}
 
 /**
  * Recursive object subtraction
