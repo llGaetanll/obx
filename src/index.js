@@ -8,13 +8,6 @@ const t = (d) =>
     ? "o" // object
     : "p"; // primitive
 
-/**
- * Assert that 2 objects are identical with same keys, in the same order
- * @param {Object} a Object 1
- * @param {Object} b Object 2
- */
-export const id = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-
 // create iterator from object/array
 // this ensures we aren't missing any keys
 const iterObj = (o) => {
