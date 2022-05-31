@@ -656,7 +656,7 @@ describe("map_r", () => {
       raz: "faz",
     };
 
-    // Note that map will callback on every value of the object, including sub objects!
+    // Note that map will callback on every value of the object, including sub objects.
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
     const n = obx.map_r(o, emphasis);
 
@@ -874,6 +874,36 @@ describe("zip", () => {
     expect(obx.eq(v1, ["bar", 4])).toBe(true);
     expect(obx.eq(v2, ["haz", 5])).toBe(true);
     expect(obx.eq(v2, [{ baz: "haz" }, 5])).toBe(false);
+  });
+
+  test("many objects", () => {
+    const a = ["a", "b", "c"];
+    const b = [1, 2, 3];
+    const c = ["x", "y", "z"];
+    const d = [3, 2, 1];
+
+    const z = obx.zip(a, b, c, d);
+
+    const v1 = z.next().value;
+    const v2 = z.next().value;
+    const v3 = z.next().value;
+
+    expect(obx.eq(v1, ["a", 1, "x", 3])).toBe(true);
+    expect(obx.eq(v2, ["b", 2, "y", 2])).toBe(true);
+    expect(obx.eq(v3, ["c", 3, "z", 1])).toBe(true);
+  });
+
+  test("stop early", () => {
+    const a = ["a", "b", "c"];
+    const b = [1];
+
+    const z = obx.zip(a, b);
+
+    const v1 = z.next().value;
+    const v2 = z.next().value;
+
+    expect(obx.eq(v1, ["a", 1])).toBe(true);
+    expect(v2).toBe(undefined);
   });
 });
 
