@@ -116,6 +116,7 @@ Objects are equal if they have the same keys.
 | b | <code>Object</code> | Object 2 |
 | [d] | <code>number</code> | Depth of equality check. Defaults to infinity |
 
+**Examples**
 ### `get`
 Get value from object
 
@@ -126,8 +127,11 @@ Get value from object
 | o | <code>Object</code> | The object |
 | p | <code>String</code> | Value path |
 
-**Example** *(Get a deep key)*  
-```js
+**Examples**
+  <details>
+    <summary>Get a deep key</summary>
+
+    ```js
 obx.get("foo.bar", {
    foo: {
      bar: "baz"
@@ -135,8 +139,12 @@ obx.get("foo.bar", {
 });
 // -> "baz"
 ```
-**Example** *(Also works with arrays)*  
-```js
+
+  </details>
+  <details>
+    <summary>Also works with arrays</summary>
+
+    ```js
 obx.get("foo.2.baz", {
    foo: [
      {
@@ -152,13 +160,19 @@ obx.get("foo.2.baz", {
 });
 // -> "baz"
 ```
-**Example** *(No key? No problem.)*  
-```js
+
+  </details>
+  <details>
+    <summary>No key? No problem.</summary>
+
+    ```js
 obx.get("foo.2.baz", {
    foo: 'bar'
 })
 // -> null
 ```
+
+  </details>
 ### `set`
 Set value in object
 
@@ -170,8 +184,11 @@ Set value in object
 | p | <code>String</code> | Value path |
 | v | <code>Object</code> | Value to set |
 
-**Example** *(Set deep key)*  
-```js
+**Examples**
+  <details>
+    <summary>Set deep key</summary>
+
+    ```js
 const o = {}
 obx.set(o, "foo.2.foo", 'bar')
 // o -> {
@@ -180,6 +197,8 @@ obx.set(o, "foo.2.foo", 'bar')
 //    }]
 // }
 ```
+
+  </details>
 ### `len`
 Recursively find the number of keys of an object.
 
@@ -190,20 +209,33 @@ Recursively find the number of keys of an object.
 | o | <code>Object</code> | Object to find length of |
 | [d] | <code>number</code> | Depth of len. Defaults to infinity |
 
-**Example** *(Simple object)*  
-```js
+**Examples**
+  <details>
+    <summary>Simple object</summary>
+
+    ```js
 obx.len({ foo: 'bar', bar: 'baz' }) // -> 2
 ```
-**Example** *(Recursive object, low depth)*  
-```js
+
+  </details>
+  <details>
+    <summary>Recursive object, low depth</summary>
+
+    ```js
 // Here depth is only computed at the top level
 obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }, 1) // -> 2
 ```
-**Example** *(Recursive object, high depth)*  
-```js
+
+  </details>
+  <details>
+    <summary>Recursive object, high depth</summary>
+
+    ```js
 // Note: array keys are counted
 obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
 ```
+
+  </details>
 ### `empty`
 Assert that an object type is empty.
 
@@ -213,19 +245,32 @@ Assert that an object type is empty.
 | --- | --- | --- |
 | o | <code>Object</code> | Object to find length of |
 
-**Example**  
-```js
+**Examples**
+  <details>
+    <summary></summary>
+
+    ```js
 obx.empty({}) // -> true
 ```
-**Example**  
-```js
+
+  </details>
+  <details>
+    <summary></summary>
+
+    ```js
 obx.empty({ foo: 'bar' }) // -> false
 ```
-**Example**  
-```js
+
+  </details>
+  <details>
+    <summary></summary>
+
+    ```js
 // only works for objects
 obx.empty([]) // -> false
 ```
+
+  </details>
 ### `cp`
 Deep copy an object
 
@@ -236,8 +281,11 @@ Deep copy an object
 | o | <code>Object</code> | Object to copy |
 | [d] | <code>number</code> | Depth of copy. Defaults to infinity |
 
-**Example** *(Copy by value, not by reference)*  
-```js
+**Examples**
+  <details>
+    <summary>Copy by value, not by reference</summary>
+
+    ```js
 const a = {
    foo: {
      bar: 'baz'
@@ -254,6 +302,8 @@ console.log(b)
 //   }
 // }
 ```
+
+  </details>
 ### `map`
 Recursively map though all entries of an object
 
@@ -265,8 +315,11 @@ Recursively map though all entries of an object
 | fn | <code>function</code> | Callback function. Contains [k, v] pair, path, object |
 | [d] | <code>number</code> | Depth of map. Defaults to infinity |
 
-**Example** *(Basic Mapping)*  
-```js
+**Examples**
+  <details>
+    <summary>Basic Mapping</summary>
+
+    ```js
  const o = {
    foo: "bar",
    bar: "baz",
@@ -283,12 +336,20 @@ Recursively map though all entries of an object
  //     baz: "foo!",
  // }
 ```
-**Example** *(Recursive Mapping, low depth)*  
-```js
+
+  </details>
+  <details>
+    <summary>Recursive Mapping, low depth</summary>
+
+    ```js
 // TODO
 ```
-**Example** *(Recursive Mapping, high depth)*  
-```js
+
+  </details>
+  <details>
+    <summary>Recursive Mapping, high depth</summary>
+
+    ```js
 const o = {
    foo: "bar",
    bar: [
@@ -312,6 +373,8 @@ const o = {
  //       raz: "faz!",
  //    }
 ```
+
+  </details>
 ### `reduce`
 Recursively reduce all entries of an object
 
@@ -324,20 +387,31 @@ Recursively reduce all entries of an object
 | a | <code>Object</code> | Accumulator |
 | [d] | <code>number</code> | Reduce depth. Defaults to infinity |
 
-**Example** *(Basic Reduce)*  
-```js
+**Examples**
+  <details>
+    <summary>Basic Reduce</summary>
+
+    ```js
 const o = { foo: "bar", bar: "baz" };
 
 const combineVals = (a, [k, v]) => [...a, v];
 obx.reduce(o, combineVals, []).join(", ");
 // -> "bar, baz"
 ```
-**Example** *(Recursive Reduce, low depth)*  
-```js
+
+  </details>
+  <details>
+    <summary>Recursive Reduce, low depth</summary>
+
+    ```js
 // TODO
 ```
-**Example** *(Recursive Reduce, high depth)*  
-```js
+
+  </details>
+  <details>
+    <summary>Recursive Reduce, high depth</summary>
+
+    ```js
 
  const o = {
    foo: "bar",
@@ -350,6 +424,8 @@ obx.reduce(o, combineVals, []).join(", ");
  obx.reduce(o, combineVals, []).join(", ");
  // -> "bar, haz"
 ```
+
+  </details>
 ### `sub`
 Recursive, in-place object subtraction
 
@@ -361,6 +437,7 @@ Recursive, in-place object subtraction
 | s | <code>Object</code> | The object to subtract with |
 | [d] | <code>number</code> | Depth of the subtraction. Defaults to infinity |
 
+**Examples**
 ### `add`
 Recursive, in-place object addition. If both objects contain the same key, defaults to o
 
@@ -372,6 +449,7 @@ Recursive, in-place object addition. If both objects contain the same key, defau
 | a | <code>Object</code> | The object to add with |
 | [d] | <code>number</code> | Depth of the addition. Defaults to infinity |
 
+**Examples**
 ### `inorder`
 Object inorder traversal iterator
 
@@ -381,6 +459,7 @@ Object inorder traversal iterator
 | --- | --- | --- |
 | o | <code>Object</code> | The object to iterate over |
 
+**Examples**
 ### `zip`
 Group multiple objects into a single iterator
 
@@ -390,8 +469,11 @@ Group multiple objects into a single iterator
 | --- | --- | --- |
 | ...o | <code>Object</code> | Objects to be zipped together |
 
-**Example** *(Stops at the first null value)*  
-```js
+**Examples**
+  <details>
+    <summary>Stops at the first null value</summary>
+
+    ```js
 const a = ["a", "b", "c"];
 const b = [1];
 
@@ -400,8 +482,12 @@ for (const z of obx.zip(a, b))
  console.log(z)
 // -> ["a", 1]
 ```
-**Example** *(Recusive)*  
-```js
+
+  </details>
+  <details>
+    <summary>Recusive</summary>
+
+    ```js
  const a = {
   foo: "bar",
   bar: {
@@ -416,8 +502,12 @@ for (const z of obx.zip(a, b))
 // -> ["bar", 4]
 // -> ["haz", 5]
 ```
-**Example** *(More than 2 Objects)*  
-```js
+
+  </details>
+  <details>
+    <summary>More than 2 Objects</summary>
+
+    ```js
 const a = ["a", "b", "c"];
 const b = [1, 2, 3];
 const c = ["x", "y", "z"];
@@ -430,6 +520,8 @@ for (const z of obx.zip(a, b, c, d))
 // -> ["c", 3, "z", 1]
 ```
 
+  </details>
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
@@ -437,7 +529,6 @@ for (const z of obx.zip(a, b, c, d))
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Change function name convention?
 - [x] Write docs
 - [x] Implement `zip`
 - [ ] Add traversal options to
