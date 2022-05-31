@@ -100,19 +100,9 @@ import { eq, cp } from '@almela/obx'
 
 
 <!-- USAGE EXAMPLES -->
-## Documentation
+## Docs
 For even more examples, see the [tests](https://github.com/llGaetanll/obx/blob/master/src/index.test.js).
 
-
-### `id`
-Assert that 2 objects are identical with same keys, in the same order
-
-**Params**
-
-| Param | Type | Description |
-| --- | --- | --- |
-| a | <code>Object</code> | Object 1 |
-| b | <code>Object</code> | Object 2 |
 
 ### `eq`
 Assert that 2 objects are equal
@@ -312,6 +302,31 @@ Recursively map though all entries of an object
 | fn | <code>function</code> | Callback function. Contains [k, v] pair, path, object |
 | [d] | <code>number</code> | Depth of map. Defaults to infinity |
 
+**Example** *(Recursive Mapping)*  
+```js
+const o = {
+   foo: "bar",
+   bar: [
+     { foo: "bar", bar: "baz" },
+     { foo: "bar", bar: "baz" },
+     { foo: "bar", bar: "baz" },
+   ],
+   raz: "faz",
+ };
+
+ // Note that map will callback on every value of the object, including sub objects.
+ const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
+ obx.map_r(o, emphasis);
+ // -> {
+ //       foo: "bar!",
+ //       bar: [
+ //         { foo: "bar!", bar: "baz!" },
+ //         { foo: "bar!", bar: "baz!" },
+ //         { foo: "bar!", bar: "baz!" },
+ //       ],
+ //       raz: "faz!",
+ //    }
+```
 ### `reduce`
 Reduce all top layer entries of an object
 
@@ -323,6 +338,14 @@ Reduce all top layer entries of an object
 | fn | <code>function</code> | Callback function. Contains [k, v] pair, path, object |
 | a | <code>Object</code> | Accumulator |
 
+**Example** *(Basic Reduce)*  
+```js
+const o = { foo: "bar", bar: "baz" };
+
+const combineVals = (a, [k, v]) => [...a, v];
+obx.reduce(o, combineVals, []).join(", ");
+// -> "bar, baz"
+```
 ### `reduce_r`
 Recursively reduce all entries of an object
 
@@ -335,6 +358,20 @@ Recursively reduce all entries of an object
 | a | <code>Object</code> | Accumulator |
 | [d] | <code>number</code> | Reduce depth. Defaults to infinity |
 
+**Example** *(Recursive Reduce)*  
+```js
+
+ const o = {
+   foo: "bar",
+   bar: {
+     baz: "haz",
+   },
+ };
+
+ const combineVals = (a, [k, v]) => (v instanceof Object ? a : [...a, v]);
+ obx.reduce(o, combineVals, []).join(", ");
+ // -> "bar, haz"
+```
 ### `sub_i`
 Recursive, in-place object subtraction
 
@@ -373,8 +410,47 @@ Group multiple objects into a single iterator
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ...objects | <code>Object</code> | Objects to be zipped together |
+| ...o | <code>Object</code> | Objects to be zipped together |
 
+**Example** *(Stops at the first null value)*  
+```js
+const a = ["a", "b", "c"];
+const b = [1];
+
+// loop runs only once
+for (const z of obx.zip(a, b))
+ console.log(z)
+// -> ["a", 1]
+```
+**Example** *(Recusive)*  
+```js
+ const a = {
+  foo: "bar",
+  bar: {
+    baz: "haz",
+  },
+};
+
+const b = [4, 5];
+
+for (const z of obx.zip(a, b))
+ console.log(z)
+// -> ["bar", 4]
+// -> ["haz", 5]
+```
+**Example** *(More than 2 Objects)*  
+```js
+const a = ["a", "b", "c"];
+const b = [1, 2, 3];
+const c = ["x", "y", "z"];
+const d = [3, 2, 1];
+
+for (const z of obx.zip(a, b, c, d))
+ console.log(z)
+// -> ["a", 1, "x", 3]
+// -> ["b", 2, "y", 2]
+// -> ["c", 3, "z", 1]
+```
 ### `sub`
 Recursive object subtraction
 
@@ -407,7 +483,7 @@ Recursive object addition. If both objects contain the same key, defaults to o
 
 - [ ] Change function name convention?
 - [x] Write docs
-- [ ] Implement `zip`
+- [x] Implement `zip`
 - [ ] Add traversal options to
   - [ ] `map_r`
   - [ ] `reduce_r`
