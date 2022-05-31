@@ -35,9 +35,6 @@ const iterObj = (o) => {
   })();
 };
 
-// Tree traversals
-function* traverse(o) {}
-
 /**
  * Assert that 2 objects are equal
  * Objects are equal if they have the same keys.
@@ -281,6 +278,30 @@ export const map = (o, fn) => map_r(o, fn, 1);
  * @param {Object} o Object to map through
  * @param {Function} fn Callback function. Contains [k, v] pair, path, object
  * @param {number=} d Depth of map. Defaults to infinity
+ *
+ * @example <caption>Recursive Mapping</caption>
+ * const o = {
+ *    foo: "bar",
+ *    bar: [
+ *      { foo: "bar", bar: "baz" },
+ *      { foo: "bar", bar: "baz" },
+ *      { foo: "bar", bar: "baz" },
+ *    ],
+ *    raz: "faz",
+ *  };
+ *
+ *  // Note that map will callback on every value of the object, including sub objects.
+ *  const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
+ *  obx.map_r(o, emphasis);
+ *  // -> {
+ *  //       foo: "bar!",
+ *  //       bar: [
+ *  //         { foo: "bar!", bar: "baz!" },
+ *  //         { foo: "bar!", bar: "baz!" },
+ *  //         { foo: "bar!", bar: "baz!" },
+ *  //       ],
+ *  //       raz: "faz!",
+ *  //    }
  */
 export const map_r = (o, fn, d = -1) => {
   // this type check could be removed with TS
@@ -314,6 +335,13 @@ export const map_r = (o, fn, d = -1) => {
  * @param {Object} o Object to map through
  * @param {Function} fn Callback function. Contains [k, v] pair, path, object
  * @param {Object} a Accumulator
+ *
+ * @example <caption>Basic Reduce</caption>
+ * const o = { foo: "bar", bar: "baz" };
+ *
+ * const combineVals = (a, [k, v]) => [...a, v];
+ * obx.reduce(o, combineVals, []).join(", ");
+ * // -> "bar, baz"
  */
 export const reduce = (o, fn, a) => reduce_r(o, fn, a, 1);
 
@@ -323,6 +351,19 @@ export const reduce = (o, fn, a) => reduce_r(o, fn, a, 1);
  * @param {Function} fn Callback function. Contains accumulator, [k, v] pair, path, object
  * @param {Object} a Accumulator
  * @param {number=} d Reduce depth. Defaults to infinity
+ *
+ * @example <caption>Recursive Reduce</caption>
+ *
+ *  const o = {
+ *    foo: "bar",
+ *    bar: {
+ *      baz: "haz",
+ *    },
+ *  };
+ *
+ *  const combineVals = (a, [k, v]) => (v instanceof Object ? a : [...a, v]);
+ *  obx.reduce(o, combineVals, []).join(", ");
+ *  // -> "bar, haz"
  */
 export const reduce_r = (o, fn, a, d = -1) => {
   // p: current object path
@@ -349,7 +390,7 @@ export const reduce_r = (o, fn, a, d = -1) => {
  * Object inorder traversal iterator
  * @param {Object} o The object to iterate over
  */
-export function* inorder(o) {
+function* inorder(o) {
   for (const v of Object.values(o)) {
     if ("oa".includes(t(v))) yield* inorder(v);
     else yield v;
@@ -358,7 +399,43 @@ export function* inorder(o) {
 
 /**
  * Group multiple objects into a single iterator
- * @param {...Object} objects - Objects to be zipped together
+ * @param {...Object} o - Objects to be zipped together
+ *
+ * @example <caption>Stops at the first null value</caption>
+ * const a = ["a", "b", "c"];
+ * const b = [1];
+ *
+ * // loop runs only once
+ * for (const z of obx.zip(a, b))
+ *  console.log(z)
+ * // -> ["a", 1]
+ *
+ * @example <caption>Recusive</caption>
+ *  const a = {
+ *   foo: "bar",
+ *   bar: {
+ *     baz: "haz",
+ *   },
+ * };
+ *
+ * const b = [4, 5];
+ *
+ * for (const z of obx.zip(a, b))
+ *  console.log(z)
+ * // -> ["bar", 4]
+ * // -> ["haz", 5]
+ *
+ * @example <caption>More than 2 Objects</caption>
+ * const a = ["a", "b", "c"];
+ * const b = [1, 2, 3];
+ * const c = ["x", "y", "z"];
+ * const d = [3, 2, 1];
+ *
+ * for (const z of obx.zip(a, b, c, d))
+ *  console.log(z)
+ * // -> ["a", 1, "x", 3]
+ * // -> ["b", 2, "y", 2]
+ * // -> ["c", 3, "z", 1]
  */
 export function* zip(...o) {
   const gens = [];
