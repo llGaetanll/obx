@@ -161,30 +161,23 @@ export const set = (o, p, v) => {
 };
 
 /**
- * Find the number of keys of an object.
- *
- * @param {Object} o Object to find length of
- *
- * @example <caption>Simple object</caption>
- * obx.len({ foo: 'bar', bar: 'baz' }) // -> 2
- *
- * @example <caption>Recursive object</caption>
- * // Note: use `len_r` for recursive length
- * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 2
- */
-export const len = (o) => Object.keys(o).length;
-
-/**
  * Recursively find the number of keys of an object.
  *
  * @param {Object} o Object to find length of
  * @param {number=} d Depth of len. Defaults to infinity
  *
- * @example <caption>Recursive object</caption>
+ * @example <caption>Simple object</caption>
+ * obx.len({ foo: 'bar', bar: 'baz' }) // -> 2
+ *
+ * @example <caption>Recursive object, low depth</caption>
+ * // Here depth is only computed at the top level
+ * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }, 1) // -> 2
+ *
+ * @example <caption>Recursive object, high depth</caption>
  * // Note: array keys are counted
  * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
  */
-export const len_r = (o, d = -1) => reduce_r(o, (a) => a + 1, 0, d);
+export const len = (o, d = -1) => reduce(o, (a) => a + 1, 0, d);
 
 /**
  * Assert that an object type is empty.
@@ -246,15 +239,16 @@ export const cp = (o, d = -1) => {
     return a;
   };
 
-  return reduce_r(o, fn, type === "a" ? [] : {}, d);
+  return reduce(o, fn, type === "a" ? [] : {}, d);
 };
 
 /**
- * Map though all top layer entries of an object
+ * Recursively map though all entries of an object
  * @param {Object} o Object to map through
  * @param {Function} fn Callback function. Contains [k, v] pair, path, object
+ * @param {number=} d Depth of map. Defaults to infinity
  *
- * @example <caption>Basic mapping</caption>
+ * @example <caption>Basic Mapping</caption>
  *  const o = {
  *    foo: "bar",
  *    bar: "baz",
@@ -264,22 +258,17 @@ export const cp = (o, d = -1) => {
  *  // Note that map will callback on every value of the object, including sub objects!
  *  const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
  *
- *  obx.map(o, emphasis);
+ *  obx.map(o, emphasis, 1);
  *  // -> {
  *  //     foo: "bar!",
  *  //     bar: "baz!",
  *  //     baz: "foo!",
  *  // }
- */
-export const map = (o, fn) => map_r(o, fn, 1);
-
-/**
- * Recursively map though all entries of an object
- * @param {Object} o Object to map through
- * @param {Function} fn Callback function. Contains [k, v] pair, path, object
- * @param {number=} d Depth of map. Defaults to infinity
  *
- * @example <caption>Recursive Mapping</caption>
+ * @example <caption>Recursive Mapping, low depth</caption>
+ * // TODO
+ *
+ * @example <caption>Recursive Mapping, high depth</caption>
  * const o = {
  *    foo: "bar",
  *    bar: [
@@ -303,7 +292,7 @@ export const map = (o, fn) => map_r(o, fn, 1);
  *  //       raz: "faz!",
  *  //    }
  */
-export const map_r = (o, fn, d = -1) => {
+export const map = (o, fn, d = -1) => {
   // this type check could be removed with TS
   const type = t(o);
   if (!"ao".includes(type)) throw new Error("Object must be passed to map");
@@ -331,10 +320,11 @@ export const map_r = (o, fn, d = -1) => {
 };
 
 /**
- * Reduce all top layer entries of an object
+ * Recursively reduce all entries of an object
  * @param {Object} o Object to map through
- * @param {Function} fn Callback function. Contains [k, v] pair, path, object
+ * @param {Function} fn Callback function. Contains accumulator, [k, v] pair, path, object
  * @param {Object} a Accumulator
+ * @param {number=} d Reduce depth. Defaults to infinity
  *
  * @example <caption>Basic Reduce</caption>
  * const o = { foo: "bar", bar: "baz" };
@@ -342,17 +332,11 @@ export const map_r = (o, fn, d = -1) => {
  * const combineVals = (a, [k, v]) => [...a, v];
  * obx.reduce(o, combineVals, []).join(", ");
  * // -> "bar, baz"
- */
-export const reduce = (o, fn, a) => reduce_r(o, fn, a, 1);
-
-/**
- * Recursively reduce all entries of an object
- * @param {Object} o Object to map through
- * @param {Function} fn Callback function. Contains accumulator, [k, v] pair, path, object
- * @param {Object} a Accumulator
- * @param {number=} d Reduce depth. Defaults to infinity
  *
- * @example <caption>Recursive Reduce</caption>
+ * @example <caption>Recursive Reduce, low depth</caption>
+ * // TODO
+ *
+ * @example <caption>Recursive Reduce, high depth</caption>
  *
  *  const o = {
  *    foo: "bar",
@@ -365,7 +349,7 @@ export const reduce = (o, fn, a) => reduce_r(o, fn, a, 1);
  *  obx.reduce(o, combineVals, []).join(", ");
  *  // -> "bar, haz"
  */
-export const reduce_r = (o, fn, a, d = -1) => {
+export const reduce = (o, fn, a, d = -1) => {
   // p: current object path
   // r: root object
   const aux = (o, fn, a, d, p, r) => {
@@ -459,20 +443,12 @@ export function* zip(...o) {
 }
 
 /**
- * Recursive object subtraction
- * @param {Object} o The object to be subtracted from. This object is mutated.
- * @param {Object} s The object to subtract with
- * @param {number=} d Depth of the subtraction. Defaults to infinity
- */
-const sub = (o, s, d = -1) => {};
-
-/**
  * Recursive, in-place object subtraction
  * @param {Object} o The object to be subtracted from. This object is mutated.
  * @param {Object} s The object to subtract with
  * @param {number=} d Depth of the subtraction. Defaults to infinity
  */
-export const sub_i = (o, s, d = -1) => {
+export const sub = (o, s, d = -1) => {
   if (d === 0) return;
 
   for (const k of Object.keys(o)) {
@@ -493,20 +469,12 @@ export const sub_i = (o, s, d = -1) => {
 };
 
 /**
- * Recursive object addition. If both objects contain the same key, defaults to o
- * @param {Object} o The object to be added to.
- * @param {Object} a The object to add with
- * @param {number=} d Depth of the addition. Defaults to infinity
- */
-const add = (o, s, d = -1) => {};
-
-/**
  * Recursive, in-place object addition. If both objects contain the same key, defaults to o
  * @param {Object} o The object to be added to.
  * @param {Object} a The object to add with
  * @param {number=} d Depth of the addition. Defaults to infinity
  */
-export const add_i = (o, a, d = -1) => {
+export const add = (o, a, d = -1) => {
   if (d === 0) return;
 
   for (const k of Object.keys(a)) {
