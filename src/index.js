@@ -363,10 +363,7 @@ export const reduce = (o, fn, a, d = -1) => {
   return aux(o, fn, a, d, [], o);
 };
 
-/**
- * Object inorder traversal iterator
- * @param {Object} o The object to iterate over
- */
+// Object inorder traversal iterator
 function* inorder(o) {
   for (const v of Object.values(o)) {
     if ("oa".includes(t(v))) yield* inorder(v);

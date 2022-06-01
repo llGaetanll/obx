@@ -372,15 +372,6 @@ Recursive, in-place object addition. If both objects contain the same key, defau
 
 **Examples**
 
-### `inorder`
-Object inorder traversal iterator
-
-**Params**
-
-- `o`  : <code>Object</code> - *The object to iterate over* 
-
-**Examples**
-
 ### `zip`
 Group multiple objects into a single iterator
 
