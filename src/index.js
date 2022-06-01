@@ -423,12 +423,12 @@ export function* zip(...o) {
   while (true) {
     const vals = [];
     for (const g of gens) {
-      const v = g.next().value;
+      const n = g.next();
 
       // return as soon as one object is fully iterated
-      if (!v) return;
+      if (n.done) return;
 
-      vals.push(v);
+      vals.push(n.value);
     }
 
     yield vals;
@@ -452,7 +452,7 @@ export const sub = (o, s, d = -1) => {
 
     // objects or arrays
     if ("oa".includes(t(o[k]))) {
-      sub_i(o[k], s[k], d - 1);
+      sub(o[k], s[k], d - 1);
       if (len(o[k]) < 1) delete o[k];
     }
 
@@ -477,7 +477,7 @@ export const add = (o, a, d = -1) => {
     if ("ao".includes(type)) {
       // init empty obj/arr
       if (!(k in o)) o[k] = type === "o" ? {} : [];
-      add_i(o[k], a[k], d - 1);
+      add(o[k], a[k], d - 1);
     }
 
     if (type === "p" && !(k in o)) o[k] = a[k];
