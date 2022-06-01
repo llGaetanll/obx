@@ -267,45 +267,48 @@ describe("len", () => {
 
   test("nested object", () => {
     // remember that this is non-recursive length, so the number of keys is 1
-    expect(obx.len({ foo: { bar: "baz" } })).toBe(1);
+    expect(obx.len({ foo: { bar: "baz" } }, 1)).toBe(1);
   });
 
   test("empty array", () => {
-    expect(obx.len([])).toBe(0);
+    expect(obx.len([], 1)).toBe(0);
   });
 
   test("simple array", () => {
-    expect(obx.len([1])).toBe(1);
+    expect(obx.len([1], 1)).toBe(1);
   });
 
   test("long array", () => {
-    expect(obx.len([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])).toBe(10);
+    expect(obx.len([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 1)).toBe(10);
   });
 
   test("nested array", () => {
     // remember that this is non-recursive length, so the number of values is 2
     expect(
-      obx.len([
-        [1, 2, 3],
-        [1, 2, 3],
-      ])
+      obx.len(
+        [
+          [1, 2, 3],
+          [1, 2, 3],
+        ],
+        1
+      )
     ).toBe(2);
   });
 });
 
-describe("len_r", () => {
+describe("rec len", () => {
   test("empty object", () => {
-    expect(obx.len_r({})).toBe(0);
+    expect(obx.len({})).toBe(0);
   });
 
   test("simple object", () => {
-    expect(obx.len_r({ foo: "bar" })).toBe(1);
+    expect(obx.len({ foo: "bar" })).toBe(1);
   });
 
   test("deep object", () => {
     // Note that len_r counts the number of *keys* of an object, hence 7
     expect(
-      obx.len_r({
+      obx.len({
         foo: {
           bar: "baz",
           baz: "bar",
@@ -316,17 +319,17 @@ describe("len_r", () => {
   });
 
   test("empty array", () => {
-    expect(obx.len_r([])).toBe(0);
+    expect(obx.len([])).toBe(0);
   });
 
   test("simple array", () => {
-    expect(obx.len_r([1, 2, 3])).toBe(3);
+    expect(obx.len([1, 2, 3])).toBe(3);
   });
 
   test("deep array", () => {
     // array indicies are counted, hence 12
     expect(
-      obx.len_r([
+      obx.len([
         [1, 2, 3],
         [4, 5, 6],
         [7, 8, 9],
@@ -335,20 +338,20 @@ describe("len_r", () => {
   });
 
   test("object depth 0", () => {
-    expect(obx.len_r({ foo: "bar" }, 0)).toBe(0);
+    expect(obx.len({ foo: "bar" }, 0)).toBe(0);
   });
 
   test("object depth 1", () => {
-    expect(obx.len_r({ foo: "bar", bar: [1, 2, 3] }, 1)).toBe(2);
+    expect(obx.len({ foo: "bar", bar: [1, 2, 3] }, 1)).toBe(2);
   });
 
   test("array depth 0", () => {
-    expect(obx.len_r([1, 2, 3], 0)).toBe(0);
+    expect(obx.len([1, 2, 3], 0)).toBe(0);
   });
 
   test("array depth 1", () => {
     expect(
-      obx.len_r(
+      obx.len(
         [
           [1, 2, 3],
           [4, 5, 6],
@@ -474,7 +477,7 @@ describe("map", () => {
 
     // Note that map will callback on every value of the object, including sub objects!
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map(o, emphasis);
+    const n = obx.map(o, emphasis, 1);
 
     expect(obx.eq(n, {})).toBe(true);
   });
@@ -488,7 +491,7 @@ describe("map", () => {
 
     // Note that map will callback on every value of the object, including sub objects!
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map(o, emphasis);
+    const n = obx.map(o, emphasis, 1);
 
     expect(
       obx.eq(n, {
@@ -510,7 +513,7 @@ describe("map", () => {
 
     // Note that map will callback on every value of the object, including sub objects!
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map(o, emphasis);
+    const n = obx.map(o, emphasis, 1);
 
     expect(
       obx.eq(n, {
@@ -525,7 +528,7 @@ describe("map", () => {
   test("empty array", () => {
     const o = [];
 
-    const n = obx.map(o, ([_, v]) => v + 1);
+    const n = obx.map(o, ([_, v]) => v + 1, 1);
 
     expect(obx.eq(n, [])).toBe(true);
   });
@@ -533,7 +536,7 @@ describe("map", () => {
   test("simple array", () => {
     const o = [1, 2, 3];
 
-    const n = obx.map(o, ([_, v]) => v + 1);
+    const n = obx.map(o, ([_, v]) => v + 1, 1);
 
     expect(obx.eq(n, [2, 3, 4])).toBe(true);
   });
@@ -541,13 +544,13 @@ describe("map", () => {
   test("deep array", () => {
     const o = [1, [1, 2, 3], 3];
 
-    const n = obx.map(o, ([_, v]) => (v instanceof Object ? v : v + 1));
+    const n = obx.map(o, ([_, v]) => (v instanceof Object ? v : v + 1), 1);
 
     expect(obx.eq(n, [2, [1, 2, 3], 4])).toBe(true);
   });
 });
 
-describe("map_r", () => {
+describe("rec map", () => {
   test("deep object", () => {
     const o = {
       foo: "bar",
@@ -563,7 +566,7 @@ describe("map_r", () => {
     // Note that map will callback on every value of the object, including sub objects!
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
 
-    const n = obx.map_r(o, emphasis);
+    const n = obx.map(o, emphasis);
 
     expect(
       obx.eq(n, {
@@ -592,7 +595,7 @@ describe("map_r", () => {
 
     // Note that map will callback on every value of the object, including sub objects.
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map_r(o, emphasis);
+    const n = obx.map(o, emphasis);
 
     expect(
       obx.eq(n, {
@@ -616,7 +619,7 @@ describe("map_r", () => {
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
 
     // depth 0 should have no effect
-    const n = obx.map_r(o, emphasis, 0);
+    const n = obx.map(o, emphasis, 0);
 
     expect(obx.eq(n, { foo: "bar", bar: "baz" })).toBe(true);
   });
@@ -630,7 +633,7 @@ describe("map_r", () => {
     };
 
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map_r(o, emphasis, 2);
+    const n = obx.map(o, emphasis, 2);
 
     expect(
       obx.eq(n, { foo: "bar!", bar: { baz: ["foo", "bar", "baz"] } })
@@ -643,7 +646,7 @@ describe("reduce", () => {
     const o = {};
 
     const combineVals = (a, [k, v]) => [...a, v];
-    const n = obx.reduce(o, combineVals, []);
+    const n = obx.reduce(o, combineVals, [], 1);
 
     expect(obx.eq(n, [])).toBe(true);
   });
@@ -652,7 +655,7 @@ describe("reduce", () => {
     const o = { foo: "bar", bar: "baz" };
 
     const combineVals = (a, [k, v]) => [...a, v];
-    const n = obx.reduce(o, combineVals, []).join(", ");
+    const n = obx.reduce(o, combineVals, [], 1).join(", ");
 
     expect(n).toBe("bar, baz");
   });
@@ -661,7 +664,7 @@ describe("reduce", () => {
     const o = { foo: "bar", bar: "baz" };
 
     const combineKeys = (a, [k, v]) => [...a, k];
-    const n = obx.reduce(o, combineKeys, []).join(", ");
+    const n = obx.reduce(o, combineKeys, [], 1).join(", ");
 
     expect(n).toBe("foo, bar");
   });
@@ -670,7 +673,7 @@ describe("reduce", () => {
     const o = [];
 
     const combineVals = (a, [k, v]) => [...a, v];
-    const n = obx.reduce(o, combineVals, []);
+    const n = obx.reduce(o, combineVals, [], 1);
 
     expect(obx.eq(n, [])).toBe(true);
   });
@@ -679,7 +682,7 @@ describe("reduce", () => {
     const o = ["foo", "bar", "baz"];
 
     const combineVals = (a, [k, v]) => [...a, v];
-    const n = obx.reduce(o, combineVals, []).join(", ");
+    const n = obx.reduce(o, combineVals, [], 1).join(", ");
 
     expect(n).toBe("foo, bar, baz");
   });
@@ -688,13 +691,13 @@ describe("reduce", () => {
     const o = [1, 2, 3, 4, 5];
 
     const combineVals = (a, [k, v]) => a + parseInt(k);
-    const n = obx.reduce(o, combineVals, 0);
+    const n = obx.reduce(o, combineVals, 0, 1);
 
     expect(n).toBe(10);
   });
 });
 
-describe("reduce_r", () => {
+describe("rec reduce", () => {
   test("flatten deep object", () => {
     const o = {
       isActive: true,
@@ -719,7 +722,7 @@ describe("reduce_r", () => {
     const flatten = (a, [k, v]) =>
       v instanceof Object ? a : k in a ? a : ((a[k] = v), a);
 
-    const n = obx.reduce_r(o, flatten, {});
+    const n = obx.reduce(o, flatten, {});
 
     expect(
       obx.eq(n, {
@@ -755,7 +758,7 @@ describe("reduce_r", () => {
 
     // this also flattens the object
     const invert = (a, [k, v]) => (v instanceof Object ? a : ((a[v] = k), a));
-    const n = obx.reduce_r(o, invert, {});
+    const n = obx.reduce(o, invert, {});
 
     expect(
       obx.eq(n, {
@@ -839,14 +842,46 @@ describe("zip", () => {
     expect(obx.eq(v1, ["a", 1])).toBe(true);
     expect(v2).toBe(undefined);
   });
+
+  test("only one object", () => {
+    const o = {
+      foo: "foo",
+      bar: "bar",
+      baz: [
+        {
+          id: 0,
+          name: "Patrice Meyer",
+        },
+        {
+          id: 1,
+          name: "Lee Watson",
+        },
+        {
+          id: 2,
+          name: "Strong Munoz",
+        },
+      ],
+    };
+
+    const z = obx.zip(o);
+
+    expect(obx.eq(z.next().value, ["foo"])).toBe(true);
+    expect(obx.eq(z.next().value, ["bar"])).toBe(true);
+    expect(obx.eq(z.next().value, [0])).toBe(true);
+    expect(obx.eq(z.next().value, ["Patrice Meyer"])).toBe(true);
+    expect(obx.eq(z.next().value, [1])).toBe(true);
+    expect(obx.eq(z.next().value, ["Lee Watson"])).toBe(true);
+    expect(obx.eq(z.next().value, [2])).toBe(true);
+    expect(obx.eq(z.next().value, ["Strong Munoz"])).toBe(true);
+  });
 });
 
-describe("sub_i", () => {
+describe("sub", () => {
   test("empty object", () => {
     const a = {};
     const b = {};
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, {})).toBe(true);
   });
 
@@ -861,7 +896,7 @@ describe("sub_i", () => {
       list: [1, 2, 3],
     };
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, { bar: "baz" })).toBe(true);
   });
 
@@ -869,7 +904,7 @@ describe("sub_i", () => {
     const a = [];
     const b = [];
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, [])).toBe(true);
   });
 
@@ -877,7 +912,7 @@ describe("sub_i", () => {
     const a = [1, 2, 3];
     const b = [1, 2, 3];
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, [])).toBe(true);
   });
 
@@ -886,7 +921,7 @@ describe("sub_i", () => {
     const b = [];
     b[2] = { bar: "baz" };
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, [{ foo: "bar" }, 2])).toBe(true);
   });
 
@@ -897,7 +932,7 @@ describe("sub_i", () => {
     const res = [];
     res[2] = 3;
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, res)).toBe(true);
   });
 
@@ -944,7 +979,7 @@ describe("sub_i", () => {
       },
     };
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
 
     expect(obx.eq(a, res)).toBe(true);
   });
