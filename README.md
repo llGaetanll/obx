@@ -115,6 +115,7 @@ Objects are equal if they have the same keys.
 - `[d]`  : <code>number</code> - *Depth of equality check. Defaults to infinity* 
 
 **Examples**
+
 ### `get`
 Get value from object
 
@@ -124,6 +125,7 @@ Get value from object
 - `p`  : <code>String</code> - *Value path* 
 
 **Examples**
+
 Get a deep key
 ```js
 obx.get("foo.bar", {
@@ -167,6 +169,7 @@ Set value in object
 - `v`  : <code>Object</code> - *Value to set* 
 
 **Examples**
+
 Set deep key
 ```js
 const o = {}
@@ -186,6 +189,7 @@ Recursively find the number of keys of an object.
 - `[d]`  : <code>number</code> - *Depth of len. Defaults to infinity* 
 
 **Examples**
+
 Simple object
 ```js
 obx.len({ foo: 'bar', bar: 'baz' }) // -> 2
@@ -209,6 +213,7 @@ Assert that an object type is empty.
 
 **Examples**
 
+
 ```js
 obx.empty({}) // -> true
 ```
@@ -230,6 +235,7 @@ Deep copy an object
 - `[d]`  : <code>number</code> - *Depth of copy. Defaults to infinity* 
 
 **Examples**
+
 Copy by value, not by reference
 ```js
 const a = {
@@ -258,6 +264,7 @@ Recursively map though all entries of an object
 - `[d]`  : <code>number</code> - *Depth of map. Defaults to infinity* 
 
 **Examples**
+
 Basic Mapping
 ```js
  const o = {
@@ -316,6 +323,7 @@ Recursively reduce all entries of an object
 - `[d]`  : <code>number</code> - *Reduce depth. Defaults to infinity* 
 
 **Examples**
+
 Basic Reduce
 ```js
 const o = { foo: "bar", bar: "baz" };
@@ -352,6 +360,7 @@ Recursive, in-place object subtraction
 - `[d]`  : <code>number</code> - *Depth of the subtraction. Defaults to infinity* 
 
 **Examples**
+
 ### `add`
 Recursive, in-place object addition. If both objects contain the same key, defaults to o
 
@@ -362,6 +371,7 @@ Recursive, in-place object addition. If both objects contain the same key, defau
 - `[d]`  : <code>number</code> - *Depth of the addition. Defaults to infinity* 
 
 **Examples**
+
 ### `inorder`
 Object inorder traversal iterator
 
@@ -370,6 +380,7 @@ Object inorder traversal iterator
 - `o`  : <code>Object</code> - *The object to iterate over* 
 
 **Examples**
+
 ### `zip`
 Group multiple objects into a single iterator
 
@@ -378,6 +389,7 @@ Group multiple objects into a single iterator
 - `...o`  : <code>Object</code> - *Objects to be zipped together* 
 
 **Examples**
+
 Stops at the first null value
 ```js
 const a = ["a", "b", "c"];
