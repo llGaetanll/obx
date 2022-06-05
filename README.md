@@ -103,6 +103,22 @@ import { eq, cp } from '@almela/obx'
 ## Docs
 For even more examples, see the [tests](https://github.com/llGaetanll/obx/blob/master/src/index.test.js).
 
+### Constants
+
+* [eq](#eq)
+* [get](#get)
+* [set](#set)
+* [len](#len)
+* [empty](#empty)
+* [cp](#cp)
+* [map](#map)
+* [reduce](#reduce)
+* [sub](#sub)
+* [add](#add)
+
+### Functions
+
+* [zip(objects, params)](#zip)
 
 ### `eq`
 Assert that 2 objects are equal
@@ -114,6 +130,7 @@ Objects are equal if they have the same keys.
 - `b`  : <code>Object</code> - *Object 2* 
 - `[d]`  : <code>number</code> - *Depth of equality check. Defaults to infinity* 
 
+
 **Examples**
 
 ### `get`
@@ -123,6 +140,7 @@ Get value from object
 
 - `o`  : <code>Object</code> - *The object* 
 - `p`  : <code>String</code> - *Value path* 
+
 
 **Examples**
 
@@ -168,6 +186,7 @@ Set value in object
 - `p`  : <code>String</code> - *Value path* 
 - `v`  : <code>Object</code> - *Value to set* 
 
+
 **Examples**
 
 Set deep key
@@ -187,6 +206,7 @@ Recursively find the number of keys of an object.
 
 - `o`  : <code>Object</code> - *Object to find length of* 
 - `[d]`  : <code>number</code> - *Depth of len. Defaults to infinity* 
+
 
 **Examples**
 
@@ -211,6 +231,7 @@ Assert that an object type is empty.
 
 - `o`  : <code>Object</code> - *Object to find length of* 
 
+
 **Examples**
 
 
@@ -233,6 +254,7 @@ Deep copy an object
 
 - `o`  : <code>Object</code> - *Object to copy* 
 - `[d]`  : <code>number</code> - *Depth of copy. Defaults to infinity* 
+
 
 **Examples**
 
@@ -262,6 +284,7 @@ Recursively map though all entries of an object
 - `o`  : <code>Object</code> - *Object to map through* 
 - `fn`  : <code>function</code> - *Callback function. Contains [k, v] pair, path, object* 
 - `[d]`  : <code>number</code> - *Depth of map. Defaults to infinity* 
+
 
 **Examples**
 
@@ -322,6 +345,7 @@ Recursively reduce all entries of an object
 - `a`  : <code>Object</code> - *Accumulator* 
 - `[d]`  : <code>number</code> - *Reduce depth. Defaults to infinity* 
 
+
 **Examples**
 
 Basic Reduce
@@ -359,6 +383,7 @@ Recursive, in-place object subtraction
 - `s`  : <code>Object</code> - *The object to subtract with* 
 - `[d]`  : <code>number</code> - *Depth of the subtraction. Defaults to infinity* 
 
+
 **Examples**
 
 ### `add`
@@ -370,14 +395,17 @@ Recursive, in-place object addition. If both objects contain the same key, defau
 - `a`  : <code>Object</code> - *The object to add with* 
 - `[d]`  : <code>number</code> - *Depth of the addition. Defaults to infinity* 
 
+
 **Examples**
 
 ### `zip`
-Group multiple objects into a single iterator
+Group multiple objects into a single iterator.
 
 **Params**
 
-- `...o`  : <code>Object</code> - *Objects to be zipped together* 
+- `objects`  : <code>Array</code> - *An array of Objects to be zipped together.* 
+- `params`  : <code>Object</code> - *Object of parameters (depth, key, val, last, itter)* 
+
 
 **Examples**
 
@@ -387,7 +415,7 @@ const a = ["a", "b", "c"];
 const b = [1];
 
 // loop runs only once
-for (const z of obx.zip(a, b))
+for (const z of obx.zip([a, b]))
  console.log(z)
 // -> ["a", 1]
 ```
@@ -402,7 +430,7 @@ Recusive
 
 const b = [4, 5];
 
-for (const z of obx.zip(a, b))
+for (const z of obx.zip([a, b]))
  console.log(z)
 // -> ["bar", 4]
 // -> ["haz", 5]
@@ -414,7 +442,7 @@ const b = [1, 2, 3];
 const c = ["x", "y", "z"];
 const d = [3, 2, 1];
 
-for (const z of obx.zip(a, b, c, d))
+for (const z of obx.zip([a, b, c, d]))
  console.log(z)
 // -> ["a", 1, "x", 3]
 // -> ["b", 2, "y", 2]
@@ -429,11 +457,12 @@ for (const z of obx.zip(a, b, c, d))
 ## Roadmap
 
 - [x] Write docs
+- [ ] Write `eq` in terms of a list of objects?
 - [x] Implement `zip`
 - [ ] Add traversal options to
   - [ ] `map`
   - [ ] `reduce`
-  - [ ] `zip`
+  - [x] `zip`
 - [ ] Complete test coverage
   - [ ] Test `add`
 - [ ] Transition to TS

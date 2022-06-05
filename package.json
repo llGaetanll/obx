@@ -7,7 +7,7 @@
     "start": "node build/index.js",
     "watch": "babel src --watch --out-dir build --source-maps",
     "build": "babel src --out-dir build --source-maps",
-    "doc-gen": "jsdoc2md --partial docs/partials/*.hbs --helper docs/*.js --template docs/README.hbs --files src/index.js > README.md",
+    "doc-gen": "jsdoc2md --partial docs/partials/*.hbs --param-list-format list --global-index-format grouped --helper docs/*.js --template docs/README.hbs --files src/index.js > README.md",
     "doc-json": "jsdoc2md --json src/index.js > docs/doc.json",
     "test": "jest",
     "test-watch": "jest --watch"
