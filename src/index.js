@@ -47,7 +47,7 @@ const iterObj = (o) => {
  * @param {Object} b Object 2
  * @param {number=} d Depth of equality check. Defaults to infinity
  */
-export const eq = (a, b, d = -1) => {
+export function eq(a, b, d = -1) {
   if (d === 0) return true;
 
   // check for same root object type
@@ -77,7 +77,7 @@ export const eq = (a, b, d = -1) => {
   }
 
   return true;
-};
+}
 
 /**
  * Get value from object
@@ -116,7 +116,7 @@ export const eq = (a, b, d = -1) => {
  * // -> null
  *
  */
-export const get = (o, p) => {
+export function get(o, p) {
   const path = p.split(".");
 
   for (let i = 0; i < path.length; i++) {
@@ -128,7 +128,7 @@ export const get = (o, p) => {
   }
 
   return o;
-};
+}
 
 /**
  * Set value in object
@@ -147,7 +147,7 @@ export const get = (o, p) => {
  * // }
  *
  */
-export const set = (o, p, v) => {
+export function set(o, p, v) {
   const path = p.split(".");
 
   for (let i = 0; i < path.length; i++) {
@@ -162,7 +162,7 @@ export const set = (o, p, v) => {
 
     o = o[d];
   }
-};
+}
 
 /**
  * Recursively find the number of keys of an object.
@@ -181,7 +181,9 @@ export const set = (o, p, v) => {
  * // Note: array keys are counted
  * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
  */
-export const len = (o, d = -1) => reduce(o, (a) => a + 1, 0, d);
+export function len(o, d = -1) {
+  return reduce(o, (a) => a + 1, 0, d);
+}
 
 /**
  * Assert that an object type is empty.
@@ -198,7 +200,9 @@ export const len = (o, d = -1) => reduce(o, (a) => a + 1, 0, d);
  * // only works for objects
  * obx.empty([]) // -> false
  */
-export const empty = (o) => eq(o, {});
+export function isEmptyObj(o) {
+  return eq(o, {});
+}
 
 /**
  * Deep copy an object
@@ -222,7 +226,7 @@ export const empty = (o) => eq(o, {});
  * //   }
  * // }
  */
-export const cp = (o, d = -1) => {
+export function cp(o, d = -1) {
   // this type check could be removed with TS
   const type = t(o);
   if (!"ao".includes(type)) throw new Error("Object must be passed to cp");
@@ -244,7 +248,7 @@ export const cp = (o, d = -1) => {
   };
 
   return reduce(o, fn, type === "a" ? [] : {}, d);
-};
+}
 
 /**
  * Recursively map though all entries of an object
@@ -296,7 +300,7 @@ export const cp = (o, d = -1) => {
  *  //       raz: "faz!",
  *  //    }
  */
-export const map = (o, fn, d = -1) => {
+export function map(o, fn, d = -1) {
   // this type check could be removed with TS
   const type = t(o);
   if (!"ao".includes(type)) throw new Error("Object must be passed to map");
@@ -321,7 +325,7 @@ export const map = (o, fn, d = -1) => {
   };
 
   return aux(o, fn, type === "a" ? [] : {}, d, [], o);
-};
+}
 
 /**
  * Recursively reduce all entries of an object
@@ -353,7 +357,7 @@ export const map = (o, fn, d = -1) => {
  *  obx.reduce(o, combineVals, []).join(", ");
  *  // -> "bar, haz"
  */
-export const reduce = (o, fn, a, d = -1) => {
+export function reduce(o, fn, a, d = -1) {
   // p: current object path
   // r: root object
   const aux = (o, fn, a, d, p, r) => {
@@ -372,7 +376,7 @@ export const reduce = (o, fn, a, d = -1) => {
   };
 
   return aux(o, fn, a, d, [], o);
-};
+}
 
 /**
  * Group multiple objects into a single iterator.
@@ -461,7 +465,7 @@ export function* zip(objects, params = {}) {
  * @param {Object} s The object to subtract with
  * @param {number=} d Depth of the subtraction. Defaults to infinity
  */
-export const sub = (o, s, d = -1) => {
+export function sub(o, s, d = -1) {
   if (d === 0) return;
 
   for (const k of Object.keys(o)) {
@@ -479,7 +483,7 @@ export const sub = (o, s, d = -1) => {
     // primitive types
     if (t(o[k]) === "p" && k in s && s[k] === o[k]) delete o[k];
   }
-};
+}
 
 /**
  * Recursive, in-place object addition. If both objects contain the same key, defaults to o
@@ -487,7 +491,7 @@ export const sub = (o, s, d = -1) => {
  * @param {Object} a The object to add with
  * @param {number=} d Depth of the addition. Defaults to infinity
  */
-export const add = (o, a, d = -1) => {
+export function add(o, a, d = -1) {
   if (d === 0) return;
 
   for (const k of Object.keys(a)) {
@@ -502,4 +506,4 @@ export const add = (o, a, d = -1) => {
 
     if (type === "p" && !(k in o)) o[k] = a[k];
   }
-};
+}

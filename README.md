@@ -103,22 +103,19 @@ import { eq, cp } from '@almela/obx'
 ## Docs
 For even more examples, see the [tests](https://github.com/llGaetanll/obx/blob/master/src/index.test.js).
 
-### Constants
-
-* [eq](#eq)
-* [get](#get)
-* [set](#set)
-* [len](#len)
-* [empty](#empty)
-* [cp](#cp)
-* [map](#map)
-* [reduce](#reduce)
-* [sub](#sub)
-* [add](#add)
-
 ### Functions
 
+* [eq(a, b, [d])](#eq)
+* [get(o, p)](#get)
+* [set(o, p, v)](#set)
+* [len(o, [d])](#len)
+* [isEmptyObj(o)](#isEmptyObj)
+* [cp(o, [d])](#cp)
+* [map(o, fn, [d])](#map)
+* [reduce(o, fn, a, [d])](#reduce)
 * [zip(objects, params)](#zip)
+* [sub(o, s, [d])](#sub)
+* [add(o, a, [d])](#add)
 
 ### `eq`
 Assert that 2 objects are equal
@@ -224,7 +221,7 @@ Recursive object, high depth
 // Note: array keys are counted
 obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
 ```
-### `empty`
+### `isEmptyObj`
 Assert that an object type is empty.
 
 **Params**
@@ -374,30 +371,6 @@ Recursive Reduce, high depth
  obx.reduce(o, combineVals, []).join(", ");
  // -> "bar, haz"
 ```
-### `sub`
-Recursive, in-place object subtraction
-
-**Params**
-
-- `o`  : <code>Object</code> - *The object to be subtracted from. This object is mutated.* 
-- `s`  : <code>Object</code> - *The object to subtract with* 
-- `[d]`  : <code>number</code> - *Depth of the subtraction. Defaults to infinity* 
-
-
-**Examples**
-
-### `add`
-Recursive, in-place object addition. If both objects contain the same key, defaults to o
-
-**Params**
-
-- `o`  : <code>Object</code> - *The object to be added to.* 
-- `a`  : <code>Object</code> - *The object to add with* 
-- `[d]`  : <code>number</code> - *Depth of the addition. Defaults to infinity* 
-
-
-**Examples**
-
 ### `zip`
 Group multiple objects into a single iterator.
 
@@ -448,6 +421,30 @@ for (const z of obx.zip([a, b, c, d]))
 // -> ["b", 2, "y", 2]
 // -> ["c", 3, "z", 1]
 ```
+### `sub`
+Recursive, in-place object subtraction
+
+**Params**
+
+- `o`  : <code>Object</code> - *The object to be subtracted from. This object is mutated.* 
+- `s`  : <code>Object</code> - *The object to subtract with* 
+- `[d]`  : <code>number</code> - *Depth of the subtraction. Defaults to infinity* 
+
+
+**Examples**
+
+### `add`
+Recursive, in-place object addition. If both objects contain the same key, defaults to o
+
+**Params**
+
+- `o`  : <code>Object</code> - *The object to be added to.* 
+- `a`  : <code>Object</code> - *The object to add with* 
+- `[d]`  : <code>number</code> - *Depth of the addition. Defaults to infinity* 
+
+
+**Examples**
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
