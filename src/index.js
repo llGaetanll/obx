@@ -427,7 +427,7 @@ export function reduce(o, fn, acc, params = {}) {
  *  console.log(z)
  * // -> ["a", 1]
  *
- * @example <caption>Recusive</caption>
+ * @example <caption>Recursive</caption>
  *  const a = {
  *   foo: "bar",
  *   bar: {

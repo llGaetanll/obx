@@ -425,7 +425,7 @@ for (const z of obx.zip([a, b]))
  console.log(z)
 // -> ["a", 1]
 ```
-Recusive
+Recursive
 ```js
  const a = {
   foo: "bar",
