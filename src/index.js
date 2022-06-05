@@ -45,10 +45,13 @@ const iterObj = (o) => {
  *
  * @param {Object} a Object 1
  * @param {Object} b Object 2
- * @param {number=} d Depth of equality check. Defaults to infinity
+ * @param {Object} params Parameters object
+ * @param {number=} params.depth Depth of equality check. Defaults to infinity
  */
-export function eq(a, b, d = -1) {
-  if (d === 0) return true;
+export function eq(a, b, params = {}) {
+  const { depth = -1 } = params;
+
+  if (depth === 0) return true;
 
   // check for same root object type
   if (t(a) !== t(b)) return false;
@@ -70,7 +73,7 @@ export function eq(a, b, d = -1) {
     if (t(a[k]) === "f") continue;
 
     // objects or arrays
-    if ("oa".includes(t(a[k]))) return eq(a[k], b[k], d - 1);
+    if ("oa".includes(t(a[k]))) return eq(a[k], b[k], { depth: depth - 1 });
 
     // primitive types
     if (t(a[k]) === "p" && a[k] !== b[k]) return false;
@@ -168,7 +171,8 @@ export function set(o, p, v) {
  * Recursively find the number of keys of an object.
  *
  * @param {Object} o Object to find length of
- * @param {number=} d Depth of len. Defaults to infinity
+ * @param {Object} params Parameters object
+ * @param {number=} params.depth Depth of len check. Defaults to infinity
  *
  * @example <caption>Simple object</caption>
  * obx.len({ foo: 'bar', bar: 'baz' }) // -> 2
@@ -181,33 +185,51 @@ export function set(o, p, v) {
  * // Note: array keys are counted
  * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
  */
-export function len(o, d = -1) {
-  return reduce(o, (a) => a + 1, 0, d);
+export function len(o, params = {}) {
+  return reduce(o, (a) => a + 1, 0, params);
 }
 
 /**
  * Assert that an object type is empty.
  *
- * @param {Object} o Object to find length of
+ * @param {Object} o Object to assert is empty
  *
  * @example
- * obx.empty({}) // -> true
+ * obx.isEmptyObj({}) // -> true
  *
  * @example
- * obx.empty({ foo: 'bar' }) // -> false
+ * obx.isEmptyObj({ foo: 'bar' }) // -> false
  *
- * @example
- * // only works for objects
- * obx.empty([]) // -> false
+ * @example <caption>Only works for objects</caption>
+ * obx.isEmptyObj([]) // -> false
  */
 export function isEmptyObj(o) {
   return eq(o, {});
 }
 
 /**
+ * Assert that an object type is empty.
+ *
+ * @param {Array} a The arrary to assert is empty
+ *
+ * @example
+ * obx.isEmptyArr([]) // -> true
+ *
+ * @example
+ * obx.isEmptyArr([1, 2, 3]) // -> false
+ *
+ * @example <caption>Only works for arrays</caption>
+ * obx.isEmptyArr({}) // -> false
+ */
+export function isEmptyArr(o) {
+  return eq(o, []);
+}
+
+/**
  * Deep copy an object
  * @param {Object} o Object to copy
- * @param {number=} d Depth of copy. Defaults to infinity
+ * @param {Object} params Parameters object
+ * @param {number=} params.depth Depth of copy. Defaults to infinity
  *
  * @example <caption>Copy by value, not by reference</caption>
  * const a = {
@@ -226,7 +248,9 @@ export function isEmptyObj(o) {
  * //   }
  * // }
  */
-export function cp(o, d = -1) {
+export function cp(o, params = {}) {
+  const { depth = -1 } = params;
+
   // this type check could be removed with TS
   const type = t(o);
   if (!"ao".includes(type)) throw new Error("Object must be passed to cp");
@@ -247,14 +271,15 @@ export function cp(o, d = -1) {
     return a;
   };
 
-  return reduce(o, fn, type === "a" ? [] : {}, d);
+  return reduce(o, fn, type === "a" ? [] : {}, { depth });
 }
 
 /**
  * Recursively map though all entries of an object
  * @param {Object} o Object to map through
  * @param {Function} fn Callback function. Contains [k, v] pair, path, object
- * @param {number=} d Depth of map. Defaults to infinity
+ * @param {Object} params Parameters object
+ * @param {number=} params.depth Depth of map. Defaults to infinity
  *
  * @example <caption>Basic Mapping</caption>
  *  const o = {
@@ -300,7 +325,9 @@ export function cp(o, d = -1) {
  *  //       raz: "faz!",
  *  //    }
  */
-export function map(o, fn, d = -1) {
+export function map(o, fn, params = {}) {
+  const { depth = -1 } = params;
+
   // this type check could be removed with TS
   const type = t(o);
   if (!"ao".includes(type)) throw new Error("Object must be passed to map");
@@ -324,7 +351,7 @@ export function map(o, fn, d = -1) {
     return n;
   };
 
-  return aux(o, fn, type === "a" ? [] : {}, d, [], o);
+  return aux(o, fn, type === "a" ? [] : {}, depth, [], o);
 }
 
 /**
@@ -332,7 +359,8 @@ export function map(o, fn, d = -1) {
  * @param {Object} o Object to map through
  * @param {Function} fn Callback function. Contains accumulator, [k, v] pair, path, object
  * @param {Object} a Accumulator
- * @param {number=} d Reduce depth. Defaults to infinity
+ * @param {Object} params Parameters object
+ * @param {number=} params.depth Depth of reduce. Defaults to infinity
  *
  * @example <caption>Basic Reduce</caption>
  * const o = { foo: "bar", bar: "baz" };
@@ -357,7 +385,8 @@ export function map(o, fn, d = -1) {
  *  obx.reduce(o, combineVals, []).join(", ");
  *  // -> "bar, haz"
  */
-export function reduce(o, fn, a, d = -1) {
+export function reduce(o, fn, acc, params = {}) {
+  const { depth = -1 } = params;
   // p: current object path
   // r: root object
   const aux = (o, fn, a, d, p, r) => {
@@ -375,13 +404,18 @@ export function reduce(o, fn, a, d = -1) {
     return a;
   };
 
-  return aux(o, fn, a, d, [], o);
+  return aux(o, fn, acc, depth, [], o);
 }
 
 /**
  * Group multiple objects into a single iterator.
- * @param {Array} objects An array of Objects to be zipped together.
- * @param {Object} params Object of parameters (depth, key, val, last, itter)
+ * @param {Array} objs Array of objects to be zipped together.
+ * @param {Object} params Parameters object
+ * @param {number=} params.depth Depth of zip. Defaults to infinity
+ * @param {Boolean=} params.key Whether zip should return object keys. Defaults to `false`
+ * @param {Boolean=} params.val Whether zip should return object values. Defaults to `true`
+ * @param {Boolean=} params.last Whether zip should stop iterating when the last object is done, as opposed to the first. Defaults to `false`
+ * @param {Function=} params.iter Iterator used by zip. Defaults to inorder traversal.
  *
  * @example <caption>Stops at the first null value</caption>
  * const a = ["a", "b", "c"];
@@ -419,7 +453,7 @@ export function reduce(o, fn, a, d = -1) {
  * // -> ["b", 2, "y", 2]
  * // -> ["c", 3, "z", 1]
  */
-export function* zip(objects, params = {}) {
+export function* zip(objs, params = {}) {
   const {
     depth = -1,
     key = false,
@@ -430,7 +464,7 @@ export function* zip(objects, params = {}) {
   const gens = [];
 
   // for each object, create an iterator
-  for (const o of objects) gens.push(iter(o, depth));
+  for (const o of objs) gens.push(iter(o, depth));
 
   let allDone;
   do {
@@ -463,10 +497,13 @@ export function* zip(objects, params = {}) {
  * Recursive, in-place object subtraction
  * @param {Object} o The object to be subtracted from. This object is mutated.
  * @param {Object} s The object to subtract with
- * @param {number=} d Depth of the subtraction. Defaults to infinity
+ * @param {Object} params Parameters object
+ * @param {number=} params.depth Depth of subtraction. Defaults to infinity
  */
-export function sub(o, s, d = -1) {
-  if (d === 0) return;
+export function sub(o, s, params = {}) {
+  const { depth = -1 } = params;
+
+  if (depth === 0) return;
 
   for (const k of Object.keys(o)) {
     if (t(o[k]) !== t(s[k])) continue;
@@ -476,7 +513,7 @@ export function sub(o, s, d = -1) {
 
     // objects or arrays
     if ("oa".includes(t(o[k]))) {
-      sub(o[k], s[k], d - 1);
+      sub(o[k], s[k], { depth: depth - 1 });
       if (len(o[k]) < 1) delete o[k];
     }
 
@@ -489,10 +526,13 @@ export function sub(o, s, d = -1) {
  * Recursive, in-place object addition. If both objects contain the same key, defaults to o
  * @param {Object} o The object to be added to.
  * @param {Object} a The object to add with
- * @param {number=} d Depth of the addition. Defaults to infinity
+ * @param {Object} params Parameters object
+ * @param {number=} params.depth Depth of addition. Defaults to infinity
  */
-export function add(o, a, d = -1) {
-  if (d === 0) return;
+export function add(o, a, params = {}) {
+  const { depth = -1 } = params;
+
+  if (depth === 0) return;
 
   for (const k of Object.keys(a)) {
     const type = t(a[k]);
@@ -501,7 +541,7 @@ export function add(o, a, d = -1) {
     if ("ao".includes(type)) {
       // init empty obj/arr
       if (!(k in o)) o[k] = type === "o" ? {} : [];
-      add(o[k], a[k], d - 1);
+      add(o[k], a[k], { depth: depth - 1 });
     }
 
     if (type === "p" && !(k in o)) o[k] = a[k];

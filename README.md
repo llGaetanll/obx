@@ -105,17 +105,18 @@ For even more examples, see the [tests](https://github.com/llGaetanll/obx/blob/m
 
 ### Functions
 
-* [eq(a, b, [d])](#eq)
+* [eq(a, b, params)](#eq)
 * [get(o, p)](#get)
 * [set(o, p, v)](#set)
-* [len(o, [d])](#len)
+* [len(o, params)](#len)
 * [isEmptyObj(o)](#isEmptyObj)
-* [cp(o, [d])](#cp)
-* [map(o, fn, [d])](#map)
-* [reduce(o, fn, a, [d])](#reduce)
-* [zip(objects, params)](#zip)
-* [sub(o, s, [d])](#sub)
-* [add(o, a, [d])](#add)
+* [isEmptyArr(a)](#isEmptyArr)
+* [cp(o, params)](#cp)
+* [map(o, fn, params)](#map)
+* [reduce(o, fn, a, params)](#reduce)
+* [zip(objs, params)](#zip)
+* [sub(o, s, params)](#sub)
+* [add(o, a, params)](#add)
 
 ### `eq`
 Assert that 2 objects are equal
@@ -125,7 +126,8 @@ Objects are equal if they have the same keys.
 
 - `a`  : <code>Object</code> - *Object 1* 
 - `b`  : <code>Object</code> - *Object 2* 
-- `[d]`  : <code>number</code> - *Depth of equality check. Defaults to infinity* 
+- `params`  : <code>Object</code> - *Parameters object* 
+    - `[.depth]`  : <code>number</code> - *Depth of equality check. Defaults to infinity* 
 
 
 **Examples**
@@ -202,7 +204,8 @@ Recursively find the number of keys of an object.
 **Params**
 
 - `o`  : <code>Object</code> - *Object to find length of* 
-- `[d]`  : <code>number</code> - *Depth of len. Defaults to infinity* 
+- `params`  : <code>Object</code> - *Parameters object* 
+    - `[.depth]`  : <code>number</code> - *Depth of len check. Defaults to infinity* 
 
 
 **Examples**
@@ -226,23 +229,44 @@ Assert that an object type is empty.
 
 **Params**
 
-- `o`  : <code>Object</code> - *Object to find length of* 
+- `o`  : <code>Object</code> - *Object to assert is empty* 
 
 
 **Examples**
 
 
 ```js
-obx.empty({}) // -> true
+obx.isEmptyObj({}) // -> true
 ```
 
 ```js
-obx.empty({ foo: 'bar' }) // -> false
+obx.isEmptyObj({ foo: 'bar' }) // -> false
+```
+Only works for objects
+```js
+obx.isEmptyObj([]) // -> false
+```
+### `isEmptyArr`
+Assert that an object type is empty.
+
+**Params**
+
+- `a`  : <code>Array</code> - *The arrary to assert is empty* 
+
+
+**Examples**
+
+
+```js
+obx.isEmptyArr([]) // -> true
 ```
 
 ```js
-// only works for objects
-obx.empty([]) // -> false
+obx.isEmptyArr([1, 2, 3]) // -> false
+```
+Only works for arrays
+```js
+obx.isEmptyArr({}) // -> false
 ```
 ### `cp`
 Deep copy an object
@@ -250,7 +274,8 @@ Deep copy an object
 **Params**
 
 - `o`  : <code>Object</code> - *Object to copy* 
-- `[d]`  : <code>number</code> - *Depth of copy. Defaults to infinity* 
+- `params`  : <code>Object</code> - *Parameters object* 
+    - `[.depth]`  : <code>number</code> - *Depth of copy. Defaults to infinity* 
 
 
 **Examples**
@@ -280,7 +305,8 @@ Recursively map though all entries of an object
 
 - `o`  : <code>Object</code> - *Object to map through* 
 - `fn`  : <code>function</code> - *Callback function. Contains [k, v] pair, path, object* 
-- `[d]`  : <code>number</code> - *Depth of map. Defaults to infinity* 
+- `params`  : <code>Object</code> - *Parameters object* 
+    - `[.depth]`  : <code>number</code> - *Depth of map. Defaults to infinity* 
 
 
 **Examples**
@@ -340,7 +366,8 @@ Recursively reduce all entries of an object
 - `o`  : <code>Object</code> - *Object to map through* 
 - `fn`  : <code>function</code> - *Callback function. Contains accumulator, [k, v] pair, path, object* 
 - `a`  : <code>Object</code> - *Accumulator* 
-- `[d]`  : <code>number</code> - *Reduce depth. Defaults to infinity* 
+- `params`  : <code>Object</code> - *Parameters object* 
+    - `[.depth]`  : <code>number</code> - *Depth of reduce. Defaults to infinity* 
 
 
 **Examples**
@@ -376,8 +403,13 @@ Group multiple objects into a single iterator.
 
 **Params**
 
-- `objects`  : <code>Array</code> - *An array of Objects to be zipped together.* 
-- `params`  : <code>Object</code> - *Object of parameters (depth, key, val, last, itter)* 
+- `objs`  : <code>Array</code> - *Array of objects to be zipped together.* 
+- `params`  : <code>Object</code> - *Parameters object* 
+    - `[.depth]`  : <code>number</code> - *Depth of zip. Defaults to infinity* 
+    - `[.key]`  : <code>Boolean</code> - *Whether zip should return object keys. Defaults to `false`* 
+    - `[.val]`  : <code>Boolean</code> - *Whether zip should return object values. Defaults to `true`* 
+    - `[.last]`  : <code>Boolean</code> - *Whether zip should stop iterating when the last object is done, as opposed to the first. Defaults to `false`* 
+    - `[.iter]`  : <code>function</code> - *Iterator used by zip. Defaults to inorder traversal.* 
 
 
 **Examples**
@@ -428,7 +460,8 @@ Recursive, in-place object subtraction
 
 - `o`  : <code>Object</code> - *The object to be subtracted from. This object is mutated.* 
 - `s`  : <code>Object</code> - *The object to subtract with* 
-- `[d]`  : <code>number</code> - *Depth of the subtraction. Defaults to infinity* 
+- `params`  : <code>Object</code> - *Parameters object* 
+    - `[.depth]`  : <code>number</code> - *Depth of subtraction. Defaults to infinity* 
 
 
 **Examples**
@@ -440,7 +473,8 @@ Recursive, in-place object addition. If both objects contain the same key, defau
 
 - `o`  : <code>Object</code> - *The object to be added to.* 
 - `a`  : <code>Object</code> - *The object to add with* 
-- `[d]`  : <code>number</code> - *Depth of the addition. Defaults to infinity* 
+- `params`  : <code>Object</code> - *Parameters object* 
+    - `[.depth]`  : <code>number</code> - *Depth of addition. Defaults to infinity* 
 
 
 **Examples**
@@ -455,9 +489,11 @@ Recursive, in-place object addition. If both objects contain the same key, defau
 
 - [x] Write docs
 - [ ] Write `eq` in terms of a list of objects?
+  - [ ] Rewrite `eq` using inorder iterator
 - [x] Implement `zip`
+- [ ] Create new file of opinionated functions with nicer signatures based on existing functions 
+  - Other helpful functions like `isEmptyObj` and `isEmptyArr` could go in there too
 - [ ] Add traversal options to
-  - [ ] `map`
   - [ ] `reduce`
   - [x] `zip`
 - [ ] Complete test coverage
