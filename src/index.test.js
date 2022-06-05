@@ -786,7 +786,7 @@ describe("zip", () => {
 
     const b = [4, 5, 6];
 
-    const z = obx.zip(a, b);
+    const z = obx.zip([a, b]);
 
     expect(obx.eq(z.next().value, ["bar", 4])).toBe(true);
     expect(obx.eq(z.next().value, ["baz", 5])).toBe(true);
@@ -803,7 +803,7 @@ describe("zip", () => {
 
     const b = [4, 5];
 
-    const z = obx.zip(a, b);
+    const z = obx.zip([a, b]);
 
     const v1 = z.next().value;
     const v2 = z.next().value;
@@ -819,7 +819,7 @@ describe("zip", () => {
     const c = ["x", "y", "z"];
     const d = [3, 2, 1];
 
-    const z = obx.zip(a, b, c, d);
+    const z = obx.zip([a, b, c, d]);
 
     const v1 = z.next().value;
     const v2 = z.next().value;
@@ -834,7 +834,7 @@ describe("zip", () => {
     const a = ["a", "b", "c"];
     const b = [1];
 
-    const z = obx.zip(a, b);
+    const z = obx.zip([a, b]);
 
     const v1 = z.next().value;
     const v2 = z.next().value;
@@ -863,7 +863,7 @@ describe("zip", () => {
       ],
     };
 
-    const z = obx.zip(o);
+    const z = obx.zip([o]);
 
     expect(obx.eq(z.next().value, ["foo"])).toBe(true);
     expect(obx.eq(z.next().value, ["bar"])).toBe(true);
@@ -873,6 +873,68 @@ describe("zip", () => {
     expect(obx.eq(z.next().value, ["Lee Watson"])).toBe(true);
     expect(obx.eq(z.next().value, [2])).toBe(true);
     expect(obx.eq(z.next().value, ["Strong Munoz"])).toBe(true);
+  });
+
+  test("stop last", () => {
+    const a = ["a", "b", "c"];
+    const b = [1];
+
+    const z = obx.zip([a, b], { last: true });
+
+    const v1 = z.next().value;
+    const v2 = z.next().value;
+    const v3 = z.next().value;
+
+    expect(obx.eq(v1, ["a", 1])).toBe(true);
+    expect(obx.eq(v2, ["b", null])).toBe(true);
+    expect(obx.eq(v3, ["c", null])).toBe(true);
+  });
+
+  test("only keys", () => {
+    const a = { a: 0, b: 1, c: 2 };
+    const b = ["a", "b", "c"];
+
+    // the opposite of what we would normally get
+    const z = obx.zip([a, b], { key: true, val: false });
+
+    const v1 = z.next().value;
+    const v2 = z.next().value;
+    const v3 = z.next().value;
+
+    expect(obx.eq(v1, ["a", "0"])).toBe(true);
+    expect(obx.eq(v2, ["b", "1"])).toBe(true);
+    expect(obx.eq(v3, ["c", "2"])).toBe(true);
+  });
+
+  test("key vals", () => {
+    const a = { a: 0, b: 1, c: 2 };
+    const b = ["a", "b", "c"];
+
+    // the opposite of what we would normally get
+    const z = obx.zip([a, b], { key: true, val: true });
+
+    const v1 = z.next().value;
+    const v2 = z.next().value;
+    const v3 = z.next().value;
+
+    expect(
+      obx.eq(v1, [
+        ["a", 0],
+        [0, "a"],
+      ])
+    ).toBe(true);
+    expect(
+      obx.eq(v2, [
+        ["b", 1],
+        [1, "b"],
+      ])
+    ).toBe(true);
+    expect(
+      obx.eq(v3, [
+        ["c", 2],
+        [2, "c"],
+      ])
+    ).toBe(true);
   });
 });
 

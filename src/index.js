@@ -8,6 +8,17 @@ const t = (d) =>
     ? "o" // object
     : "p"; // primitive
 
+// Object inorder traversal iterator
+function* inorder(o, d = -1) {
+  if (d === 0) return;
+
+  for (const e of Object.entries(o)) {
+    const [_, v] = e;
+    if ("oa".includes(t(v))) yield* inorder(v, d - 1);
+    else yield e; // always yield [k, v] pair
+  }
+}
+
 // create iterator from object/array
 // this ensures we aren't missing any keys
 const iterObj = (o) => {
@@ -363,24 +374,17 @@ export const reduce = (o, fn, a, d = -1) => {
   return aux(o, fn, a, d, [], o);
 };
 
-// Object inorder traversal iterator
-function* inorder(o) {
-  for (const v of Object.values(o)) {
-    if ("oa".includes(t(v))) yield* inorder(v);
-    else yield v;
-  }
-}
-
 /**
- * Group multiple objects into a single iterator
- * @param {...Object} o - Objects to be zipped together
+ * Group multiple objects into a single iterator.
+ * @param {Array} objects An array of Objects to be zipped together.
+ * @param {Object} params Object of parameters (depth, key, val, last, itter)
  *
  * @example <caption>Stops at the first null value</caption>
  * const a = ["a", "b", "c"];
  * const b = [1];
  *
  * // loop runs only once
- * for (const z of obx.zip(a, b))
+ * for (const z of obx.zip([a, b]))
  *  console.log(z)
  * // -> ["a", 1]
  *
@@ -394,7 +398,7 @@ function* inorder(o) {
  *
  * const b = [4, 5];
  *
- * for (const z of obx.zip(a, b))
+ * for (const z of obx.zip([a, b]))
  *  console.log(z)
  * // -> ["bar", 4]
  * // -> ["haz", 5]
@@ -405,31 +409,50 @@ function* inorder(o) {
  * const c = ["x", "y", "z"];
  * const d = [3, 2, 1];
  *
- * for (const z of obx.zip(a, b, c, d))
+ * for (const z of obx.zip([a, b, c, d]))
  *  console.log(z)
  * // -> ["a", 1, "x", 3]
  * // -> ["b", 2, "y", 2]
  * // -> ["c", 3, "z", 1]
  */
-export function* zip(...o) {
+export function* zip(objects, params = {}) {
+  const {
+    depth = -1,
+    key = false,
+    val = true,
+    last = false,
+    iter = inorder,
+  } = params;
   const gens = [];
 
-  // TODO: custom iterator: right now it's inorder traversal
-  for (const _o of o) gens.push(inorder(_o));
+  // for each object, create an iterator
+  for (const o of objects) gens.push(iter(o, depth));
 
-  while (true) {
+  let allDone;
+  do {
     const vals = [];
+    allDone = true;
+
     for (const g of gens) {
       const n = g.next();
 
-      // return as soon as one object is fully iterated
-      if (n.done) return;
+      allDone = allDone && n.done;
 
-      vals.push(n.value);
+      // return as soon as one object is fully iterated
+      if (!last && n.done) return;
+
+      // return [k, v], or v, or k depending on params
+      if (n.done) vals.push(null);
+      else if (key && val) vals.push(n.value);
+      else if (key) vals.push(n.value[0]);
+      else if (val) vals.push(n.value[1]);
     }
 
+    // check if all generators are done
+    if (last && allDone) return;
+
     yield vals;
-  }
+  } while (!allDone);
 }
 
 /**
