@@ -214,12 +214,12 @@ Simple object
 ```js
 obx.len({ foo: 'bar', bar: 'baz' }) // -> 2
 ```
-Recursive object, low depth
+Recursive object, depth 1
 ```js
 // Here depth is only computed at the top level
-obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }, 1) // -> 2
+obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }, { depth: 1 }) // -> 2
 ```
-Recursive object, high depth
+Recursive object, infinite depth
 ```js
 // Note: array keys are counted
 obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
@@ -322,7 +322,8 @@ Basic Mapping
  // Note that map will callback on every value of the object, including sub objects!
  const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
 
- obx.map(o, emphasis, 1);
+ // Note that depth could be anything here, since this is just a flat object.
+ obx.map(o, emphasis, { depth: 1 });
  // -> {
  //     foo: "bar!",
  //     bar: "baz!",
@@ -347,7 +348,7 @@ const o = {
 
  // Note that map will callback on every value of the object, including sub objects.
  const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
- obx.map_r(o, emphasis);
+ obx.map(o, emphasis);
  // -> {
  //       foo: "bar!",
  //       bar: [
@@ -496,8 +497,8 @@ Recursive, in-place object addition. If both objects contain the same key, defau
 - [ ] Add traversal options to
   - [ ] `reduce`
   - [x] `zip`
-- [ ] Complete test coverage
-  - [ ] Test `add`
+- [x] Complete test coverage
+  - [x] Test `add`
 - [ ] Transition to TS
 
 <!-- See the [open issues](https://github.com/llGaetanll/obx/issues)

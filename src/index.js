@@ -177,11 +177,11 @@ export function set(o, p, v) {
  * @example <caption>Simple object</caption>
  * obx.len({ foo: 'bar', bar: 'baz' }) // -> 2
  *
- * @example <caption>Recursive object, low depth</caption>
+ * @example <caption>Recursive object, depth 1</caption>
  * // Here depth is only computed at the top level
- * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }, 1) // -> 2
+ * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }, { depth: 1 }) // -> 2
  *
- * @example <caption>Recursive object, high depth</caption>
+ * @example <caption>Recursive object, infinite depth</caption>
  * // Note: array keys are counted
  * obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
  */
@@ -291,7 +291,8 @@ export function cp(o, params = {}) {
  *  // Note that map will callback on every value of the object, including sub objects!
  *  const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
  *
- *  obx.map(o, emphasis, 1);
+ *  // Note that depth could be anything here, since this is just a flat object.
+ *  obx.map(o, emphasis, { depth: 1 });
  *  // -> {
  *  //     foo: "bar!",
  *  //     bar: "baz!",
@@ -314,7 +315,7 @@ export function cp(o, params = {}) {
  *
  *  // Note that map will callback on every value of the object, including sub objects.
  *  const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
- *  obx.map_r(o, emphasis);
+ *  obx.map(o, emphasis);
  *  // -> {
  *  //       foo: "bar!",
  *  //       bar: [
