@@ -365,10 +365,11 @@ Recursively reduce all entries of an object
 **Params**
 
 - `o`  : <code>Object</code> - *Object to map through* 
-- `fn`  : <code>function</code> - *Callback function. Contains accumulator, [k, v] pair, path, object* 
+- `fn`  : <code>function</code> - *Callback function* 
 - `a`  : <code>Object</code> - *Accumulator* 
 - `params`  : <code>Object</code> - *Parameters object* 
     - `[.depth]`  : <code>number</code> - *Depth of reduce. Defaults to infinity* 
+    - `[.iter]`  : <code>function</code> - *Iterator used by reduce. Defaults to inorder traversal.* 
 
 
 **Examples**

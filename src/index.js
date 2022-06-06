@@ -9,13 +9,17 @@ const t = (d) =>
     : "p"; // primitive
 
 // Object inorder traversal iterator
-function* inorder(o, d = -1) {
-  if (d === 0) return;
+function* inorder(o, depth = -1, path = []) {
+  if (depth === 0) return;
 
-  for (const e of Object.entries(o)) {
-    const [_, v] = e;
-    if ("oa".includes(t(v))) yield* inorder(v, d - 1);
-    else yield e; // always yield [k, v] pair
+  for (const kv of Object.entries(o)) {
+    const [k, v] = kv;
+
+    // yield is of the form { kv: [k, v], path: "path.to.current.key.0" }
+    // note that we yield no matter the value type: object, array, or other
+    yield { kv, path: [...path, k].join(".") };
+
+    if ("oa".includes(t(v))) yield* inorder(v, depth - 1, [...path, k]);
   }
 }
 
@@ -277,7 +281,7 @@ export function cp(o, params = {}) {
 /**
  * Recursively map though all entries of an object
  * @param {Object} o Object to map through
- * @param {Function} fn Callback function. Contains [k, v] pair, path, object
+ * @param {function} fn Callback function. Contains [k, v] pair, path, object
  * @param {Object} params Parameters object
  * @param {number=} params.depth Depth of map. Defaults to infinity
  *
@@ -358,10 +362,11 @@ export function map(o, fn, params = {}) {
 /**
  * Recursively reduce all entries of an object
  * @param {Object} o Object to map through
- * @param {Function} fn Callback function. Contains accumulator, [k, v] pair, path, object
+ * @param {function} fn Callback function
  * @param {Object} a Accumulator
  * @param {Object} params Parameters object
  * @param {number=} params.depth Depth of reduce. Defaults to infinity
+ * @param {function=} params.iter Iterator used by reduce. Defaults to inorder traversal.
  *
  * @example <caption>Basic Reduce</caption>
  * const o = { foo: "bar", bar: "baz" };
@@ -387,25 +392,11 @@ export function map(o, fn, params = {}) {
  *  // -> "bar, haz"
  */
 export function reduce(o, fn, acc, params = {}) {
-  const { depth = -1 } = params;
-  // p: current object path
-  // r: root object
-  const aux = (o, fn, a, d, p, r) => {
-    if (d === 0) return a;
+  const { depth = -1, iter = inorder } = params;
 
-    for (const [k, v] of Object.entries(o)) {
-      // callback is ran on all value types
-      // accumulator is mutated here
-      a = fn(a, [k, v], [...p, k].join("."), r);
+  for (const { kv, path } of iter(o, depth)) acc = fn(acc, kv, path, o);
 
-      // objects or arrays
-      if ("oa".includes(t(v))) a = aux(v, fn, a, d - 1, [...p, k], r);
-    }
-
-    return a;
-  };
-
-  return aux(o, fn, acc, depth, [], o);
+  return acc;
 }
 
 /**
@@ -416,7 +407,7 @@ export function reduce(o, fn, acc, params = {}) {
  * @param {Boolean=} params.key Whether zip should return object keys. Defaults to `false`
  * @param {Boolean=} params.val Whether zip should return object values. Defaults to `true`
  * @param {Boolean=} params.last Whether zip should stop iterating when the last object is done, as opposed to the first. Defaults to `false`
- * @param {Function=} params.iter Iterator used by zip. Defaults to inorder traversal.
+ * @param {function=} params.iter Iterator used by zip. Defaults to inorder traversal.
  *
  * @example <caption>Stops at the first null value</caption>
  * const a = ["a", "b", "c"];
@@ -482,9 +473,9 @@ export function* zip(objs, params = {}) {
 
       // return [k, v], or v, or k depending on params
       if (n.done) vals.push(null);
-      else if (key && val) vals.push(n.value);
-      else if (key) vals.push(n.value[0]);
-      else if (val) vals.push(n.value[1]);
+      else if (key && val) vals.push(n.value.kv);
+      else if (key) vals.push(n.value.kv[0]);
+      else if (val) vals.push(n.value.kv[1]);
     }
 
     // check if all generators are done

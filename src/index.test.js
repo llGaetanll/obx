@@ -842,8 +842,8 @@ describe("zip", () => {
     const v2 = z.next().value;
 
     expect(obx.eq(v1, ["bar", 4])).toBe(true);
-    expect(obx.eq(v2, ["haz", 5])).toBe(true);
-    expect(obx.eq(v2, [{ baz: "haz" }, 5])).toBe(false);
+    expect(obx.eq(v2, [{ baz: "haz" }, 5])).toBe(true);
+    expect(obx.eq(v2, ["haz", 5])).toBe(false);
   });
 
   test("many objects", () => {
@@ -900,10 +900,55 @@ describe("zip", () => {
 
     expect(obx.eq(z.next().value, ["foo"])).toBe(true);
     expect(obx.eq(z.next().value, ["bar"])).toBe(true);
+    expect(
+      obx.eq(z.next().value, [
+        [
+          {
+            id: 0,
+            name: "Patrice Meyer",
+          },
+          {
+            id: 1,
+            name: "Lee Watson",
+          },
+          {
+            id: 2,
+            name: "Strong Munoz",
+          },
+        ],
+      ])
+    ).toBe(true);
+
+    expect(
+      obx.eq(z.next().value, [
+        {
+          id: 0,
+          name: "Patrice Meyer",
+        },
+      ])
+    ).toBe(true);
     expect(obx.eq(z.next().value, [0])).toBe(true);
     expect(obx.eq(z.next().value, ["Patrice Meyer"])).toBe(true);
+
+    expect(
+      obx.eq(z.next().value, [
+        {
+          id: 1,
+          name: "Lee Watson",
+        },
+      ])
+    ).toBe(true);
     expect(obx.eq(z.next().value, [1])).toBe(true);
     expect(obx.eq(z.next().value, ["Lee Watson"])).toBe(true);
+
+    expect(
+      obx.eq(z.next().value, [
+        {
+          id: 2,
+          name: "Strong Munoz",
+        },
+      ])
+    ).toBe(true);
     expect(obx.eq(z.next().value, [2])).toBe(true);
     expect(obx.eq(z.next().value, ["Strong Munoz"])).toBe(true);
   });
