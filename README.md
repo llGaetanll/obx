@@ -495,8 +495,8 @@ Recursive, in-place object addition. If both objects contain the same key, defau
 - [x] Implement `zip`
 - [ ] Create new file of opinionated functions with nicer signatures based on existing functions 
   - Other helpful functions like `isEmptyObj` and `isEmptyArr` could go in there too
-- [ ] Add traversal options to
-  - [ ] `reduce`
+- [x] Add traversal options to
+  - [x] `reduce`
   - [x] `zip`
 - [x] Complete test coverage
   - [x] Test `add`
