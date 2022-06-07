@@ -2,7 +2,7 @@
   "name": "@almela/obx",
   "version": "0.0.1",
   "description": "Fast & Lightweight Object Manipulation Library for Javascript",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "start": "node build/index.js",
     "watch": "babel src --watch --out-dir build --source-maps",
