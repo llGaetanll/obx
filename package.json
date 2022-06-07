@@ -1,7 +1,7 @@
 {
   "name": "@almela/obx",
   "version": "0.0.1",
-  "description": "",
+  "description": "Fast & Lightweight Object Manipulation Library for Javascript",
   "main": "index.js",
   "scripts": {
     "start": "node build/index.js",
