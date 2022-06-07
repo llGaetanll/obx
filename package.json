@@ -1,5 +1,5 @@
 {
-  "name": "obx",
+  "name": "@almela/obx",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -12,12 +12,20 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "keywords": [],
+  "keywords": [
+    "Javascript",
+    "JS",
+    "Object",
+    "Library"
+  ],
   "author": "Gaetan Almela",
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.12.5"
   },
+  "files": [
+    "build/**/*"
+  ],
   "devDependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
