@@ -23,6 +23,10 @@
   "dependencies": {
     "@babel/runtime": "^7.12.5"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "files": [
     "build/**/*"
   ],
