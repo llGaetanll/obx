@@ -755,16 +755,17 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/llGaetanll/obx.svg?style=for-the-badge
-[contributors-url]: https://github.com/llGaetanll/obx/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/llGaetanll/obx.svg?style=for-the-badge
-[forks-url]: https://github.com/llGaetanll/obx/network/members
-[stars-shield]: https://img.shields.io/github/stars/llGaetanll/obx.svg?style=for-the-badge
-[stars-url]: https://github.com/llGaetanll/obx/stargazers
-[issues-shield]: https://img.shields.io/github/issues/llGaetanll/obx.svg?style=for-the-badge
-[issues-url]: https://github.com/llGaetanll/obx/issues
-[license-shield]: https://img.shields.io/github/license/llGaetanll/obx.svg?style=for-the-badge
-[license-url]: https://github.com/llGaetanll/obx/blob/master/LICENSE.txt
+
+[contributors-shield]: https://img.shields.io/github/contributors/thetechgy/windows_networkconnectionhealth_utility.svg?style=for-the-badge
+[contributors-url]: https://github.com/thetechgy/windows_networkconnectionhealth_utility/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/thetechgy/windows_networkconnectionhealth_utility.svg?style=for-the-badge
+[forks-url]: https://github.com/thetechgy/windows_networkconnectionhealth_utility/network/members
+[stars-shield]: https://img.shields.io/github/stars/thetechgy/windows_networkconnectionhealth_utility.svg?style=for-the-badge
+[stars-url]: https://github.com/thetechgy/windows_networkconnectionhealth_utility/stargazers
+[issues-shield]: https://img.shields.io/github/issues/thetechgy/windows_networkconnectionhealth_utility.svg?style=for-the-badge
+[issues-url]: https://github.com/thetechgy/windows_networkconnectionhealth_utility/issues
+[license-shield]: https://img.shields.io/github/license/thetechgy/windows_networkconnectionhealth_utility.svg?style=for-the-badge
+[license-url]: https://github.com/thetechgy/windows_networkconnectionhealth_utility/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: docs/img/screenshot.png
+[linkedin-url]: https://linkedin.com/in/travismcdade
+[product-screenshot]: images/screenshot.png
