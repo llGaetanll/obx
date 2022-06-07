@@ -44,7 +44,7 @@ describe("eq", () => {
 
     const b = [undefined, 1];
 
-    expect(obx.eq(a, b)).toBe(true); // -> false
+    expect(obx.eq(a, b)).toBe(true);
   });
 
   test("equal nested objects", () => {
@@ -79,11 +79,6 @@ describe("eq", () => {
     expect(obx.eq({ foo: "bar" }, { bar: "baz" })).toBe(false);
   });
 
-  test("different arrays", () => {
-    // Note that array order matters
-    expect(obx.eq([1, 2, 3], [3, 2, 1])).toBe(false);
-  });
-
   test("different nested arrays", () => {
     expect(
       obx.eq(
@@ -94,23 +89,27 @@ describe("eq", () => {
   });
 
   test("different objects depth 0", () => {
-    expect(obx.eq({ foo: "bar" }, { foo: "baz" }, 0)).toBe(true);
+    expect(obx.eq({ foo: "bar" }, { foo: "baz" }, { depth: 0 })).toBe(true);
   });
 
   test("different objects depth 1", () => {
-    expect(obx.eq({ foo: { bar: "baz" } }, { foo: {} }, 1)).toBe(true);
+    expect(obx.eq({ foo: { bar: "baz" } }, { foo: {} }, { depth: 1 })).toBe(
+      true
+    );
   });
 
   test("different objects depth 2", () => {
-    expect(obx.eq({ foo: { bar: "baz" } }, { foo: {} }, 2)).toBe(false);
+    expect(obx.eq({ foo: { bar: "baz" } }, { foo: {} }, { depth: 2 })).toBe(
+      false
+    );
   });
 
   test("different arrays depth 0", () => {
-    expect(obx.eq([1, 2, 3], [3, 2, 1], 0)).toBe(true);
+    expect(obx.eq([1, 2, 3], [3, 2, 1], { depth: 0 })).toBe(true);
   });
 
   test("different arrays depth 1", () => {
-    expect(obx.eq([[1], [1], [1]], [[], [], []], 1)).toBe(true);
+    expect(obx.eq([[1], [1], [1]], [[], [], []], { depth: 1 })).toBe(true);
   });
 
   test("different arrays depth 2", () => {
@@ -118,7 +117,7 @@ describe("eq", () => {
       obx.eq(
         [{ foo: 1, bar: [1, 2, 3] }, {}, {}],
         [{ foo: 1, bar: [4, 5, 6] }, {}, {}],
-        2
+        { depth: 2 }
       )
     ).toBe(true);
   });
@@ -267,45 +266,48 @@ describe("len", () => {
 
   test("nested object", () => {
     // remember that this is non-recursive length, so the number of keys is 1
-    expect(obx.len({ foo: { bar: "baz" } })).toBe(1);
+    expect(obx.len({ foo: { bar: "baz" } }, { depth: 1 })).toBe(1);
   });
 
   test("empty array", () => {
-    expect(obx.len([])).toBe(0);
+    expect(obx.len([], 1)).toBe(0);
   });
 
   test("simple array", () => {
-    expect(obx.len([1])).toBe(1);
+    expect(obx.len([1], 1)).toBe(1);
   });
 
   test("long array", () => {
-    expect(obx.len([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])).toBe(10);
+    expect(obx.len([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 1)).toBe(10);
   });
 
   test("nested array", () => {
     // remember that this is non-recursive length, so the number of values is 2
     expect(
-      obx.len([
-        [1, 2, 3],
-        [1, 2, 3],
-      ])
+      obx.len(
+        [
+          [1, 2, 3],
+          [1, 2, 3],
+        ],
+        { depth: 1 }
+      )
     ).toBe(2);
   });
 });
 
-describe("len_r", () => {
+describe("rec len", () => {
   test("empty object", () => {
-    expect(obx.len_r({})).toBe(0);
+    expect(obx.len({})).toBe(0);
   });
 
   test("simple object", () => {
-    expect(obx.len_r({ foo: "bar" })).toBe(1);
+    expect(obx.len({ foo: "bar" })).toBe(1);
   });
 
   test("deep object", () => {
     // Note that len_r counts the number of *keys* of an object, hence 7
     expect(
-      obx.len_r({
+      obx.len({
         foo: {
           bar: "baz",
           baz: "bar",
@@ -316,17 +318,17 @@ describe("len_r", () => {
   });
 
   test("empty array", () => {
-    expect(obx.len_r([])).toBe(0);
+    expect(obx.len([])).toBe(0);
   });
 
   test("simple array", () => {
-    expect(obx.len_r([1, 2, 3])).toBe(3);
+    expect(obx.len([1, 2, 3])).toBe(3);
   });
 
   test("deep array", () => {
     // array indicies are counted, hence 12
     expect(
-      obx.len_r([
+      obx.len([
         [1, 2, 3],
         [4, 5, 6],
         [7, 8, 9],
@@ -335,55 +337,82 @@ describe("len_r", () => {
   });
 
   test("object depth 0", () => {
-    expect(obx.len_r({ foo: "bar" }, 0)).toBe(0);
+    expect(obx.len({ foo: "bar" }, { depth: 0 })).toBe(0);
   });
 
   test("object depth 1", () => {
-    expect(obx.len_r({ foo: "bar", bar: [1, 2, 3] }, 1)).toBe(2);
+    expect(obx.len({ foo: "bar", bar: [1, 2, 3] }, { depth: 1 })).toBe(2);
   });
 
   test("array depth 0", () => {
-    expect(obx.len_r([1, 2, 3], 0)).toBe(0);
+    expect(obx.len([1, 2, 3], { depth: 0 })).toBe(0);
   });
 
   test("array depth 1", () => {
     expect(
-      obx.len_r(
+      obx.len(
         [
           [1, 2, 3],
           [4, 5, 6],
           [7, 8, 9],
         ],
-        1
+        { depth: 1 }
       )
     ).toBe(3);
   });
 });
 
-describe("empty", () => {
+describe("isEmptyObj", () => {
   test("empty object", () => {
-    expect(obx.empty({})).toBe(true);
+    expect(obx.isEmptyObj({})).toBe(true);
   });
 
   test("empty array", () => {
-    // Note that empty only works for object types
-    expect(obx.empty([])).toBe(false);
+    // only works for object types
+    expect(obx.isEmptyObj([])).toBe(false);
   });
 
   test("filled object", () => {
-    expect(obx.empty({ foo: "bar" })).toBe(false);
+    expect(obx.isEmptyObj({ foo: "bar" })).toBe(false);
   });
 
   test("filled array", () => {
-    expect(obx.empty([1])).toBe(false);
+    expect(obx.isEmptyObj([1])).toBe(false);
   });
 
   test("undefined object", () => {
-    expect(obx.empty({ foo: undefined })).toBe(false);
+    expect(obx.isEmptyObj({ foo: undefined })).toBe(false);
   });
 
   test("undefined array", () => {
-    expect(obx.empty([undefined])).toBe(false);
+    expect(obx.isEmptyObj([undefined])).toBe(false);
+  });
+});
+
+describe("isEmptyArr", () => {
+  test("empty array", () => {
+    expect(obx.isEmptyArr([])).toBe(true);
+  });
+
+  test("empty object", () => {
+    // only works for array types
+    expect(obx.isEmptyArr({})).toBe(false);
+  });
+
+  test("filled array", () => {
+    expect(obx.isEmptyArr([1, 2, 3])).toBe(false);
+  });
+
+  test("filled object", () => {
+    expect(obx.isEmptyArr({ foo: "bar" })).toBe(false);
+  });
+
+  test("undefined array", () => {
+    expect(obx.isEmptyArr([undefined, undefined])).toBe(true);
+  });
+
+  test("null array", () => {
+    expect(obx.isEmptyArr([null])).toBe(false);
   });
 });
 
@@ -474,7 +503,7 @@ describe("map", () => {
 
     // Note that map will callback on every value of the object, including sub objects!
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map(o, emphasis);
+    const n = obx.map(o, emphasis, 1);
 
     expect(obx.eq(n, {})).toBe(true);
   });
@@ -488,7 +517,7 @@ describe("map", () => {
 
     // Note that map will callback on every value of the object, including sub objects!
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map(o, emphasis);
+    const n = obx.map(o, emphasis, 1);
 
     expect(
       obx.eq(n, {
@@ -510,7 +539,7 @@ describe("map", () => {
 
     // Note that map will callback on every value of the object, including sub objects!
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map(o, emphasis);
+    const n = obx.map(o, emphasis, { depth: 1 });
 
     expect(
       obx.eq(n, {
@@ -525,7 +554,7 @@ describe("map", () => {
   test("empty array", () => {
     const o = [];
 
-    const n = obx.map(o, ([_, v]) => v + 1);
+    const n = obx.map(o, ([_, v]) => v + 1, { depth: 1 });
 
     expect(obx.eq(n, [])).toBe(true);
   });
@@ -533,7 +562,7 @@ describe("map", () => {
   test("simple array", () => {
     const o = [1, 2, 3];
 
-    const n = obx.map(o, ([_, v]) => v + 1);
+    const n = obx.map(o, ([_, v]) => v + 1, { depth: 1 });
 
     expect(obx.eq(n, [2, 3, 4])).toBe(true);
   });
@@ -541,13 +570,15 @@ describe("map", () => {
   test("deep array", () => {
     const o = [1, [1, 2, 3], 3];
 
-    const n = obx.map(o, ([_, v]) => (v instanceof Object ? v : v + 1));
+    const n = obx.map(o, ([_, v]) => (v instanceof Object ? v : v + 1), {
+      depth: 1,
+    });
 
     expect(obx.eq(n, [2, [1, 2, 3], 4])).toBe(true);
   });
 });
 
-describe("map_r", () => {
+describe("rec map", () => {
   test("deep object", () => {
     const o = {
       foo: "bar",
@@ -563,7 +594,7 @@ describe("map_r", () => {
     // Note that map will callback on every value of the object, including sub objects!
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
 
-    const n = obx.map_r(o, emphasis);
+    const n = obx.map(o, emphasis);
 
     expect(
       obx.eq(n, {
@@ -592,7 +623,7 @@ describe("map_r", () => {
 
     // Note that map will callback on every value of the object, including sub objects.
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map_r(o, emphasis);
+    const n = obx.map(o, emphasis);
 
     expect(
       obx.eq(n, {
@@ -616,7 +647,7 @@ describe("map_r", () => {
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
 
     // depth 0 should have no effect
-    const n = obx.map_r(o, emphasis, 0);
+    const n = obx.map(o, emphasis, { depth: 0 });
 
     expect(obx.eq(n, { foo: "bar", bar: "baz" })).toBe(true);
   });
@@ -630,7 +661,7 @@ describe("map_r", () => {
     };
 
     const emphasis = ([_, v]) => (v instanceof Object ? v : v + "!");
-    const n = obx.map_r(o, emphasis, 2);
+    const n = obx.map(o, emphasis, { depth: 2 });
 
     expect(
       obx.eq(n, { foo: "bar!", bar: { baz: ["foo", "bar", "baz"] } })
@@ -694,7 +725,7 @@ describe("reduce", () => {
   });
 });
 
-describe("reduce_r", () => {
+describe("rec reduce", () => {
   test("flatten deep object", () => {
     const o = {
       isActive: true,
@@ -719,7 +750,7 @@ describe("reduce_r", () => {
     const flatten = (a, [k, v]) =>
       v instanceof Object ? a : k in a ? a : ((a[k] = v), a);
 
-    const n = obx.reduce_r(o, flatten, {});
+    const n = obx.reduce(o, flatten, {});
 
     expect(
       obx.eq(n, {
@@ -755,7 +786,7 @@ describe("reduce_r", () => {
 
     // this also flattens the object
     const invert = (a, [k, v]) => (v instanceof Object ? a : ((a[v] = k), a));
-    const n = obx.reduce_r(o, invert, {});
+    const n = obx.reduce(o, invert, {});
 
     expect(
       obx.eq(n, {
@@ -783,7 +814,7 @@ describe("zip", () => {
 
     const b = [4, 5, 6];
 
-    const z = obx.zip(a, b);
+    const z = obx.zip([a, b]);
 
     expect(obx.eq(z.next().value, ["bar", 4])).toBe(true);
     expect(obx.eq(z.next().value, ["baz", 5])).toBe(true);
@@ -800,14 +831,14 @@ describe("zip", () => {
 
     const b = [4, 5];
 
-    const z = obx.zip(a, b);
+    const z = obx.zip([a, b]);
 
     const v1 = z.next().value;
     const v2 = z.next().value;
 
     expect(obx.eq(v1, ["bar", 4])).toBe(true);
-    expect(obx.eq(v2, ["haz", 5])).toBe(true);
-    expect(obx.eq(v2, [{ baz: "haz" }, 5])).toBe(false);
+    expect(obx.eq(v2, [{ baz: "haz" }, 5])).toBe(true);
+    expect(obx.eq(v2, ["haz", 5])).toBe(false);
   });
 
   test("many objects", () => {
@@ -816,7 +847,7 @@ describe("zip", () => {
     const c = ["x", "y", "z"];
     const d = [3, 2, 1];
 
-    const z = obx.zip(a, b, c, d);
+    const z = obx.zip([a, b, c, d]);
 
     const v1 = z.next().value;
     const v2 = z.next().value;
@@ -831,7 +862,7 @@ describe("zip", () => {
     const a = ["a", "b", "c"];
     const b = [1];
 
-    const z = obx.zip(a, b);
+    const z = obx.zip([a, b]);
 
     const v1 = z.next().value;
     const v2 = z.next().value;
@@ -839,14 +870,153 @@ describe("zip", () => {
     expect(obx.eq(v1, ["a", 1])).toBe(true);
     expect(v2).toBe(undefined);
   });
+
+  test("only one object", () => {
+    const o = {
+      foo: "foo",
+      bar: "bar",
+      baz: [
+        {
+          id: 0,
+          name: "Patrice Meyer",
+        },
+        {
+          id: 1,
+          name: "Lee Watson",
+        },
+        {
+          id: 2,
+          name: "Strong Munoz",
+        },
+      ],
+    };
+
+    const z = obx.zip([o]);
+
+    expect(obx.eq(z.next().value, ["foo"])).toBe(true);
+    expect(obx.eq(z.next().value, ["bar"])).toBe(true);
+    expect(
+      obx.eq(z.next().value, [
+        [
+          {
+            id: 0,
+            name: "Patrice Meyer",
+          },
+          {
+            id: 1,
+            name: "Lee Watson",
+          },
+          {
+            id: 2,
+            name: "Strong Munoz",
+          },
+        ],
+      ])
+    ).toBe(true);
+
+    expect(
+      obx.eq(z.next().value, [
+        {
+          id: 0,
+          name: "Patrice Meyer",
+        },
+      ])
+    ).toBe(true);
+    expect(obx.eq(z.next().value, [0])).toBe(true);
+    expect(obx.eq(z.next().value, ["Patrice Meyer"])).toBe(true);
+
+    expect(
+      obx.eq(z.next().value, [
+        {
+          id: 1,
+          name: "Lee Watson",
+        },
+      ])
+    ).toBe(true);
+    expect(obx.eq(z.next().value, [1])).toBe(true);
+    expect(obx.eq(z.next().value, ["Lee Watson"])).toBe(true);
+
+    expect(
+      obx.eq(z.next().value, [
+        {
+          id: 2,
+          name: "Strong Munoz",
+        },
+      ])
+    ).toBe(true);
+    expect(obx.eq(z.next().value, [2])).toBe(true);
+    expect(obx.eq(z.next().value, ["Strong Munoz"])).toBe(true);
+  });
+
+  test("stop last", () => {
+    const a = ["a", "b", "c"];
+    const b = [1];
+
+    const z = obx.zip([a, b], { last: true });
+
+    const v1 = z.next().value;
+    const v2 = z.next().value;
+    const v3 = z.next().value;
+
+    expect(obx.eq(v1, ["a", 1])).toBe(true);
+    expect(obx.eq(v2, ["b", null])).toBe(true);
+    expect(obx.eq(v3, ["c", null])).toBe(true);
+  });
+
+  test("only keys", () => {
+    const a = { a: 0, b: 1, c: 2 };
+    const b = ["a", "b", "c"];
+
+    // the opposite of what we would normally get
+    const z = obx.zip([a, b], { key: true, val: false });
+
+    const v1 = z.next().value;
+    const v2 = z.next().value;
+    const v3 = z.next().value;
+
+    expect(obx.eq(v1, ["a", "0"])).toBe(true);
+    expect(obx.eq(v2, ["b", "1"])).toBe(true);
+    expect(obx.eq(v3, ["c", "2"])).toBe(true);
+  });
+
+  test("key vals", () => {
+    const a = { a: 0, b: 1, c: 2 };
+    const b = ["a", "b", "c"];
+
+    // the opposite of what we would normally get
+    const z = obx.zip([a, b], { key: true, val: true });
+
+    const v1 = z.next().value;
+    const v2 = z.next().value;
+    const v3 = z.next().value;
+
+    expect(
+      obx.eq(v1, [
+        ["a", 0],
+        [0, "a"],
+      ])
+    ).toBe(true);
+    expect(
+      obx.eq(v2, [
+        ["b", 1],
+        [1, "b"],
+      ])
+    ).toBe(true);
+    expect(
+      obx.eq(v3, [
+        ["c", 2],
+        [2, "c"],
+      ])
+    ).toBe(true);
+  });
 });
 
-describe("sub_i", () => {
+describe("sub", () => {
   test("empty object", () => {
     const a = {};
     const b = {};
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, {})).toBe(true);
   });
 
@@ -861,7 +1031,7 @@ describe("sub_i", () => {
       list: [1, 2, 3],
     };
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, { bar: "baz" })).toBe(true);
   });
 
@@ -869,7 +1039,7 @@ describe("sub_i", () => {
     const a = [];
     const b = [];
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, [])).toBe(true);
   });
 
@@ -877,7 +1047,7 @@ describe("sub_i", () => {
     const a = [1, 2, 3];
     const b = [1, 2, 3];
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, [])).toBe(true);
   });
 
@@ -886,7 +1056,7 @@ describe("sub_i", () => {
     const b = [];
     b[2] = { bar: "baz" };
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, [{ foo: "bar" }, 2])).toBe(true);
   });
 
@@ -897,7 +1067,7 @@ describe("sub_i", () => {
     const res = [];
     res[2] = 3;
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
     expect(obx.eq(a, res)).toBe(true);
   });
 
@@ -944,10 +1114,93 @@ describe("sub_i", () => {
       },
     };
 
-    obx.sub_i(a, b);
+    obx.sub(a, b);
 
     expect(obx.eq(a, res)).toBe(true);
   });
 });
 
-describe("add_i", () => {});
+describe("add", () => {
+  test("empty object", () => {
+    const a = {};
+    const b = {};
+
+    obx.add(a, b);
+    expect(obx.eq(a, {})).toBe(true);
+  });
+
+  test("simple object", () => {
+    const a = {
+      foo: "bar",
+      bar: "baz",
+      list: [1, 2, 3],
+    };
+    const b = {
+      foo: "bar",
+      haz: 5,
+    };
+
+    obx.add(a, b);
+    expect(obx.eq(a, { foo: "bar", bar: "baz", list: [1, 2, 3], haz: 5 })).toBe(
+      true
+    );
+  });
+
+  test("empty array", () => {
+    const a = [];
+    const b = [];
+
+    obx.add(a, b);
+    expect(obx.eq(a, [])).toBe(true);
+  });
+
+  test("simple array", () => {
+    const a = [1, 2, 3];
+    const b = [2, 3, 4];
+
+    obx.add(a, b);
+
+    // doesn't override keys
+    expect(obx.eq(a, [1, 2, 3])).toBe(true);
+  });
+
+  test("complex object", () => {
+    const a = {
+      foo: "bar",
+      bar: "baz",
+      baz: {
+        haz: "baz",
+        gaz: [
+          {
+            key: "val",
+            foo: "bar",
+          },
+          2,
+          3,
+        ],
+      },
+    };
+    const b = {
+      foo: "bar",
+      bar: "baz",
+      baz: {
+        haz: "baz",
+        gaz: [
+          {
+            key: "val",
+            foo: "bar",
+            new: "hello",
+          },
+          2,
+          3,
+        ],
+      },
+    };
+
+    const res = b;
+
+    obx.add(a, b);
+
+    expect(obx.eq(a, res)).toBe(true);
+  });
+});
