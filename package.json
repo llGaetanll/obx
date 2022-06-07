@@ -13,8 +13,8 @@
     "test-watch": "jest --watch"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Gaetan Almela",
+  "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.12.5"
   },
