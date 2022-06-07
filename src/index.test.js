@@ -44,7 +44,7 @@ describe("eq", () => {
 
     const b = [undefined, 1];
 
-    expect(obx.eq(a, b)).toBe(true); // -> false
+    expect(obx.eq(a, b)).toBe(true);
   });
 
   test("equal nested objects", () => {
@@ -77,11 +77,6 @@ describe("eq", () => {
 
   test("different objects", () => {
     expect(obx.eq({ foo: "bar" }, { bar: "baz" })).toBe(false);
-  });
-
-  test("different arrays", () => {
-    // Note that array order matters
-    expect(obx.eq([1, 2, 3], [3, 2, 1])).toBe(false);
   });
 
   test("different nested arrays", () => {
@@ -679,7 +674,7 @@ describe("reduce", () => {
     const o = {};
 
     const combineVals = (a, [k, v]) => [...a, v];
-    const n = obx.reduce(o, combineVals, [], 1);
+    const n = obx.reduce(o, combineVals, []);
 
     expect(obx.eq(n, [])).toBe(true);
   });
@@ -688,7 +683,7 @@ describe("reduce", () => {
     const o = { foo: "bar", bar: "baz" };
 
     const combineVals = (a, [k, v]) => [...a, v];
-    const n = obx.reduce(o, combineVals, [], 1).join(", ");
+    const n = obx.reduce(o, combineVals, []).join(", ");
 
     expect(n).toBe("bar, baz");
   });
@@ -697,7 +692,7 @@ describe("reduce", () => {
     const o = { foo: "bar", bar: "baz" };
 
     const combineKeys = (a, [k, v]) => [...a, k];
-    const n = obx.reduce(o, combineKeys, [], 1).join(", ");
+    const n = obx.reduce(o, combineKeys, []).join(", ");
 
     expect(n).toBe("foo, bar");
   });
@@ -706,7 +701,7 @@ describe("reduce", () => {
     const o = [];
 
     const combineVals = (a, [k, v]) => [...a, v];
-    const n = obx.reduce(o, combineVals, [], 1);
+    const n = obx.reduce(o, combineVals, []);
 
     expect(obx.eq(n, [])).toBe(true);
   });
@@ -715,7 +710,7 @@ describe("reduce", () => {
     const o = ["foo", "bar", "baz"];
 
     const combineVals = (a, [k, v]) => [...a, v];
-    const n = obx.reduce(o, combineVals, [], 1).join(", ");
+    const n = obx.reduce(o, combineVals, []).join(", ");
 
     expect(n).toBe("foo, bar, baz");
   });
@@ -724,7 +719,7 @@ describe("reduce", () => {
     const o = [1, 2, 3, 4, 5];
 
     const combineVals = (a, [k, v]) => a + parseInt(k);
-    const n = obx.reduce(o, combineVals, 0, 1);
+    const n = obx.reduce(o, combineVals, 0);
 
     expect(n).toBe(10);
   });
