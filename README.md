@@ -119,8 +119,8 @@ For even more examples, see the [tests](https://github.com/llGaetanll/obx/blob/m
 * [isEmptyArr(a)](#isEmptyArr)
 
 ### `eq`
-Assert that 2 objects are equal
-Objects are equal if they have the same keys.
+Assert that two objects are equal.
+Objects are equal if they have the same keys and values.
 
 **Params**
 
@@ -130,7 +130,10 @@ Objects are equal if they have the same keys.
     - `[.depth]`  : <code>number</code> - *Depth of equality check. Defaults to infinity* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 Object order doesn&#x27;t matter
 ```js
@@ -172,8 +175,10 @@ Functions
 obx.eq({ foo: (x) => x + 1 }, { foo: (x) => x + 2 })
 // -> true
 ```
+</details>
+
 ### `cp`
-Deep copy an object
+Deep copy an object.
 
 **Params**
 
@@ -182,7 +187,10 @@ Deep copy an object
     - `[.depth]`  : <code>number</code> - *Depth of copy. Defaults to infinity* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 Copy by value, not by reference
 ```js
@@ -202,8 +210,10 @@ console.log(b)
 //   }
 // }
 ```
+</details>
+
 ### `get`
-Get value from object
+Get value from object.
 
 **Params**
 
@@ -211,7 +221,10 @@ Get value from object
 - `p`  : <code>String</code> - *Value path* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 Get a deep key
 ```js
@@ -246,19 +259,38 @@ obx.get("foo.2.baz", {
 })
 // -> null
 ```
+</details>
+
 ### `set`
-Set value in object
+Set value in object.
 
 **Params**
 
-- `o`  : <code>Object</code> - *The object* 
+- `o`  : <code>Object</code> - *The object to be mutated* 
 - `p`  : <code>String</code> - *Value path* 
 - `v`  : <code>Object</code> - *Value to set* 
 
 
-**Examples**
 
-Set deep key
+
+<details>
+<summary><b>Examples</b></summary>
+
+
+```js
+const o = {}
+obx.set(o, "foo.bar.baz.haz", "hello")
+// -> {
+//   foo: {
+//     bar: {
+//       baz: {
+//         haz: "hello"
+//       }
+//     }
+//   }
+// }
+```
+
 ```js
 const o = {}
 obx.set(o, "foo.2.foo", 'bar')
@@ -268,8 +300,11 @@ obx.set(o, "foo.2.foo", 'bar')
 //    }]
 // }
 ```
+</details>
+
 ### `len`
 Recursively find the number of keys of an object.
+Note that this includes object-valued keys.
 
 **Params**
 
@@ -278,7 +313,10 @@ Recursively find the number of keys of an object.
     - `[.depth]`  : <code>number</code> - *Depth of len check. Defaults to infinity* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 Simple object
 ```js
@@ -294,8 +332,11 @@ Recursive object, infinite depth
 // Note: array keys are counted
 obx.len({ foo: 'bar', bar: { bar: 'baz', baz: [1, 2, 3] } }) // -> 7
 ```
+</details>
+
 ### `map`
-Recursively map though all entries of an object
+Recursively map though all entries of an object.
+Note that map will also iterate through object-valued keys.
 
 **Params**
 
@@ -305,7 +346,10 @@ Recursively map though all entries of an object
     - `[.depth]`  : <code>number</code> - *Depth of map. Defaults to infinity* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 Basic Mapping
 ```js
@@ -372,8 +416,11 @@ const o = {
  //       raz: "faz!",
  //    }
 ```
+</details>
+
 ### `reduce`
-Recursively reduce all entries of an object
+Recursively reduce through all entries of an object.
+Note that reduce will also iterate through object-valued keys.
 
 **Params**
 
@@ -385,7 +432,10 @@ Recursively reduce all entries of an object
     - `[.iter]`  : <code>function</code> - *Iterator used by reduce. Defaults to inorder traversal.* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 Flat object
 ```js
@@ -433,8 +483,11 @@ obx.reduce(o, combineVals, [], { depth: 2 }).join(", ");
 // -> "bar, bar, maz, haz"
 // Only gets keys down to depth 2
 ```
+</details>
+
 ### `zip`
 Group multiple objects into a single iterator.
+Note that zip will also iterate through object-valued keys.
 
 **Params**
 
@@ -447,7 +500,10 @@ Group multiple objects into a single iterator.
     - `[.iter]`  : <code>function</code> - *Iterator used by zip. Defaults to inorder traversal.* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 Stops at the first null value
 ```js
@@ -488,8 +544,10 @@ for (const z of obx.zip([a, b, c, d]))
 // -> ["b", 2, "y", 2]
 // -> ["c", 3, "z", 1]
 ```
+</details>
+
 ### `sub`
-Recursive, in-place object subtraction
+Recursive, in-place object subtraction.
 
 **Params**
 
@@ -499,7 +557,10 @@ Recursive, in-place object subtraction
     - `[.depth]`  : <code>number</code> - *Depth of subtraction. Defaults to infinity* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 Simple subtraction
 ```js
@@ -508,6 +569,7 @@ const a = {
   bar: "baz",
   list: [1, 2, 3],
 };
+
 const b = {
   foo: "bar",
   list: [1, 2, 3],
@@ -526,8 +588,11 @@ obx.sub(a, b);
 console.log(a)
 // -> []
 ```
+</details>
+
 ### `add`
-Recursive, in-place object addition. If both objects contain the same key, defaults to o
+Recursive, in-place object addition.
+If both objects contain the same key, defaults to o
 
 **Params**
 
@@ -537,7 +602,10 @@ Recursive, in-place object addition. If both objects contain the same key, defau
     - `[.depth]`  : <code>number</code> - *Depth of addition. Defaults to infinity* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 Simple addition
 ```js
@@ -556,6 +624,8 @@ obx.add(a, b);
 console.log(a)
 // -> { foo: "bar", bar: "baz", list: [1, 2, 3], haz: 5 }
 ```
+</details>
+
 ### `isEmptyObj`
 Assert that an object type is empty.
 
@@ -564,7 +634,10 @@ Assert that an object type is empty.
 - `o`  : <code>Object</code> - *Object to assert is empty* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 
 ```js
@@ -578,6 +651,8 @@ Only works for objects
 ```js
 obx.isEmptyObj([]) // -> false
 ```
+</details>
+
 ### `isEmptyArr`
 Assert that an array type is empty.
 
@@ -586,7 +661,10 @@ Assert that an array type is empty.
 - `a`  : <code>Array</code> - *The array to assert is empty* 
 
 
-**Examples**
+
+
+<details>
+<summary><b>Examples</b></summary>
 
 
 ```js
@@ -600,6 +678,8 @@ Only works for arrays
 ```js
 obx.isEmptyArr({}) // -> false
 ```
+</details>
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

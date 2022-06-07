@@ -44,8 +44,8 @@ const iterObj = (o) => {
 };
 
 /**
- * Assert that 2 objects are equal
- * Objects are equal if they have the same keys.
+ * Assert that two objects are equal.
+ * Objects are equal if they have the same keys and values.
  *
  * @param {Object} a Object 1
  * @param {Object} b Object 2
@@ -120,7 +120,8 @@ export function eq(a, b, params = {}) {
 }
 
 /**
- * Deep copy an object
+ * Deep copy an object.
+ *
  * @param {Object} o Object to copy
  * @param {Object} params Parameters object
  * @param {number=} params.depth Depth of copy. Defaults to infinity
@@ -169,7 +170,7 @@ export function cp(o, params = {}) {
 }
 
 /**
- * Get value from object
+ * Get value from object.
  *
  * @param {Object} o The object
  * @param {String} p Value path
@@ -220,13 +221,26 @@ export function get(o, p) {
 }
 
 /**
- * Set value in object
+ * Set value in object.
  *
- * @param {Object} o The object
+ * @param {Object} o The object to be mutated
  * @param {String} p Value path
  * @param {Object} v Value to set
  *
- * @example <caption>Set deep key</caption>
+ * @example
+ * const o = {}
+ * obx.set(o, "foo.bar.baz.haz", "hello")
+ * // -> {
+ * //   foo: {
+ * //     bar: {
+ * //       baz: {
+ * //         haz: "hello"
+ * //       }
+ * //     }
+ * //   }
+ * // }
+ *
+ * @example
  * const o = {}
  * obx.set(o, "foo.2.foo", 'bar')
  * // o -> {
@@ -234,7 +248,6 @@ export function get(o, p) {
  * //      foo: 'bar'
  * //    }]
  * // }
- *
  */
 export function set(o, p, v) {
   const path = p.split(".");
@@ -255,6 +268,7 @@ export function set(o, p, v) {
 
 /**
  * Recursively find the number of keys of an object.
+ * Note that this includes object-valued keys.
  *
  * @param {Object} o Object to find length of
  * @param {Object} params Parameters object
@@ -276,7 +290,9 @@ export function len(o, params = {}) {
 }
 
 /**
- * Recursively map though all entries of an object
+ * Recursively map though all entries of an object.
+ * Note that map will also iterate through object-valued keys.
+ *
  * @param {Object} o Object to map through
  * @param {function} fn Callback function. Contains [k, v] pair, path, object
  * @param {Object} params Parameters object
@@ -374,7 +390,9 @@ export function map(o, fn, params = {}) {
 }
 
 /**
- * Recursively reduce all entries of an object
+ * Recursively reduce through all entries of an object.
+ * Note that reduce will also iterate through object-valued keys.
+ *
  * @param {Object} o Object to map through
  * @param {function} fn Callback function
  * @param {Object} a Accumulator
@@ -435,6 +453,8 @@ export function reduce(o, fn, acc, params = {}) {
 
 /**
  * Group multiple objects into a single iterator.
+ * Note that zip will also iterate through object-valued keys.
+ *
  * @param {Array} objs Array of objects to be zipped together.
  * @param {Object} params Parameters object
  * @param {number=} params.depth Depth of zip. Defaults to infinity
@@ -520,7 +540,8 @@ export function* zip(objs, params = {}) {
 }
 
 /**
- * Recursive, in-place object subtraction
+ * Recursive, in-place object subtraction.
+ *
  * @param {Object} o The object to be subtracted from. This object is mutated.
  * @param {Object} s The object to subtract with
  * @param {Object} params Parameters object
@@ -532,6 +553,7 @@ export function* zip(objs, params = {}) {
  *   bar: "baz",
  *   list: [1, 2, 3],
  * };
+ *
  * const b = {
  *   foo: "bar",
  *   list: [1, 2, 3],
@@ -572,7 +594,9 @@ export function sub(o, s, params = {}) {
 }
 
 /**
- * Recursive, in-place object addition. If both objects contain the same key, defaults to o
+ * Recursive, in-place object addition.
+ * If both objects contain the same key, defaults to o
+ *
  * @param {Object} o The object to be added to. This object is mutated.
  * @param {Object} a The object to add with
  * @param {Object} params Parameters object
