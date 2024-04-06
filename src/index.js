@@ -1,3 +1,6 @@
+/* prevent prototype polution */
+Object.freeze(Object.prototype)
+
 /* type checker */
 const t = (d) =>
   d instanceof Function

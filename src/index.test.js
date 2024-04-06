@@ -1204,3 +1204,43 @@ describe("add", () => {
     expect(obx.eq(a, res)).toBe(true);
   });
 });
+
+describe("prototype polution", () => {
+  const BAD_JSON = JSON.parse('{"__proto__":{"polluted":true}}');
+
+  test("add", () => {
+    const victim = {};
+
+    try {
+      obx.add({}, BAD_JSON);
+    } catch (e) { }
+
+    expect(Object.keys(victim.__proto__).length).toBe(0);
+
+    delete Object.prototype.polluted;
+  });
+
+  test("cp", () => {
+    const victim = {};
+
+    try {
+      obx.cp({ "__proto__.polluted": true });
+    } catch (e) { }
+
+    expect(Object.keys(victim.__proto__).length).toBe(0);
+
+    delete Object.prototype.polluted;
+  })
+
+  test("set", () => {
+    const victim = {};
+
+    try {
+      obx.set({}, "__proto__.polluted", true);
+    } catch (e) { }
+
+    expect(Object.keys(victim.__proto__).length).toBe(0);
+
+    delete Object.prototype.polluted;
+  })
+});
