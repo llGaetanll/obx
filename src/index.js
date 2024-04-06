@@ -1,4 +1,4 @@
-/* prevent prototype polution */
+/* prevent prototype pollution */
 Object.freeze(Object.prototype)
 
 /* type checker */
