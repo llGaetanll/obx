@@ -1,6 +1,6 @@
 {
   "name": "@almela/obx",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Fast & Lightweight Object Manipulation Library for Javascript",
   "main": "build/index.js",
   "scripts": {
@@ -28,7 +28,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "files": [
-    "build/**/*"
+    "build/**/*",
+    "docs/img/logo.png"
   ],
   "devDependencies": {
     "@babel/cli": "^7.12.10",
